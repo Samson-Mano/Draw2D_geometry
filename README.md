@@ -9,10 +9,12 @@ Main graphics features are
 - [ ] Pan (ctrl + right click and drag)
 - [ ] Scale to fit drawing area (Ctrl + F)
 - [ ] Screenshot (ctrl + F2)
+
 Drawing objects
 - [ ] AddLine (2 Left click or keyboard input)
 - [ ] Add Circular arc (3 Left clicks or keyboard input)
 - [ ] Add Bezier curve (n clicks or keyboard input)
+
 Modify objects
 - [ ] Delete objects
 - [ ] Translate objects
@@ -22,9 +24,11 @@ Modify objects
 - [ ] Split objects (split based on parameter t)
 - [ ] Undo (Ctrl + Z)
 - [ ] Redo (Ctrl + R)
+
 Other features
 - [ ] Create/ Delete surface (automatically identify surfaces based on non-self intersecting closed boundaries)
 - [ ] Options (Enable user to control the graphics, snapping & other options of the software)
+
 Export option
 - [ ] Raw text export (*.TXT)
 - [ ] Varai Object export (*.2DS)
