@@ -5,32 +5,32 @@ Varai2D is a powerful windows application to create 2D geometry. The main object
 
 # Features
 Main graphics features are 
-- [ ] Zoom (ctrl + scroll)
-- [ ] Pan (ctrl + right click and drag)
-- [ ] Scale to fit drawing area (Ctrl + F)
-- [ ] Screenshot (ctrl + F2)
+- [x] Zoom (ctrl + scroll)
+- [x] Pan (ctrl + right click and drag)
+- [x] Scale to fit drawing area (Ctrl + F)
+- [x] Screenshot (ctrl + F2)
 
 Drawing objects
-- [ ] AddLine (2 Left click or keyboard input)
-- [ ] Add Circular arc (3 Left clicks or keyboard input)
-- [ ] Add Bezier curve (n clicks or keyboard input)
+- [x] AddLine (2 Left click or keyboard input)
+- [x] Add Circular arc (3 Left clicks or keyboard input)
+- [x] Add Bezier curve (n clicks or keyboard input)
 
 Modify objects
-- [ ] Delete objects
-- [ ] Translate objects
-- [ ] Rotate objects
-- [ ] Reflect (mirror) objects
-- [ ] Intersect objects (intersect any 2 objects)
-- [ ] Split objects (split based on parameter t)
-- [ ] Undo (Ctrl + Z)
-- [ ] Redo (Ctrl + R)
+- [x] Delete objects
+- [x] Translate objects
+- [x] Rotate objects
+- [x] Reflect (mirror) objects
+- [x] Intersect objects (intersect any 2 objects)
+- [x] Split objects (split based on parameter t)
+- [x] Undo (Ctrl + Z)
+- [x] Redo (Ctrl + R)
 
 Other features
-- [ ] Create/ Delete surface (automatically identify surfaces based on non-self intersecting closed boundaries)
-- [ ] Options (Enable user to control the graphics, snapping & other options of the software)
+- [x] Create/ Delete surface (automatically identify surfaces based on non-self intersecting closed boundaries)
+- [x] Options (Enable user to control the graphics, snapping & other options of the software)
 
 Export option
-- [ ] Raw text export (*.TXT)
+- [x] Raw text export (*.TXT)
 - [ ] Varai Object export (*.2DS)
 - [ ] Autocad format (*.DWG, *.DXF)
 - [ ] CALS compliant Metafile (*.CGM)
