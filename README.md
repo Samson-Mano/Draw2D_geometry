@@ -8,7 +8,6 @@ Main graphics features are
 - [x] Zoom (ctrl + scroll)
 - [x] Pan (ctrl + right click and drag)
 - [x] Scale to fit drawing area (Ctrl + F)
-- [x] Screenshot (ctrl + F2)
 
 Drawing objects
 - [x] AddLine (2 Left click or keyboard input)
@@ -31,7 +30,8 @@ Other features
 
 Export option
 - [x] Raw text export (*.TXT)
-- [ ] Varai Object export (*.2DS)
+- [x] Save as Picture file (*.PNG)
+- [X] Varai Object export (*.2DS)
 - [ ] Autocad format (*.DWG, *.DXF)
 - [ ] CALS compliant Metafile (*.CGM)
 - [ ] Drawing Web Format (*.DWF)
