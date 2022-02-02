@@ -49,3 +49,9 @@ Export option
 - [ ] Solid Edge 2D (*.DFT)
 - [ ] Unigraphics 2D (*.PRT)
 
+# Solution Structure
+![Varai2D Solution](/Images/varai2d_solution_structure.png)
+
+# Future work
+
+Integrate the graphics into Modern OpenGL v3.3+ from the current GDI+.
