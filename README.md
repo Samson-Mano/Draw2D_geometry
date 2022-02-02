@@ -23,7 +23,7 @@ Main graphics features are
 Drawing objects
 - [x] AddLine (2 Left click or keyboard input)
 - [x] Add Circular arc (3 Left clicks or keyboard input)
-- [x] Add Bezier curve (n clicks or keyboard input)
+- [x] Add Bezier curve (3pts, 4pts or 5pts Bezier curve)
 
 Modify objects
 - [x] Delete objects
