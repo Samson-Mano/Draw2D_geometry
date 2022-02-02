@@ -11,6 +11,9 @@ Varai2D is a powerful windows application to create 2D geometry. The main object
 
 # Status: In progress
 
+# How to use
+The attached how_to_use_varai2d.pdf gives a very detailed information on how to use this software.
+
 # Features
 Main graphics features are 
 - [x] Zoom (ctrl + scroll)
@@ -46,5 +49,3 @@ Export option
 - [ ] Solid Edge 2D (*.DFT)
 - [ ] Unigraphics 2D (*.PRT)
 
-# How to use
-The attached how_to_use_varai2d.pdf gives a very detailed information on how to use this software.
