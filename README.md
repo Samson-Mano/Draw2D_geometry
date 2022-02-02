@@ -1,6 +1,8 @@
 # VARAI2D
 Varai2D is a powerful windows application to create 2D geometry. The main objective of this application is to allow user to create 2D domains which can be easily imported to mesh generation or other FE softwares. 
 
+![Varai2D Working](/Images/varai_2d_working.gif)
+
 ![Plate with slits](/Images/plate_with_slits.png)
 
 ![Dam cross-section](/Images/dam_cross_section.png)
