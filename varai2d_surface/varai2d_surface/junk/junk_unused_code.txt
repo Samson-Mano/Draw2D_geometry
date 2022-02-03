@@ -1,0 +1,2270 @@
+﻿      public void paint_temp_line_during_translation(Graphics gr0, double transl_x, double transl_y)
+        {
+            // Paint the lines while being translated (to give user the idea how the lines will be after translating)
+            // Save graphics
+            GraphicsState g_state = gr0.Save();
+            gr0.TranslateTransform((float)transl_x,(float) transl_y);
+
+            // gr0.DrawLine(gvariables.pen_curves, (float)temp_x1, (float)temp_y1, (float)temp_x2, (float)temp_y2);
+            paint_lines(gr0);
+
+            //Restore graphics
+            gr0.Restore(g_state);
+        }
+
+        public void paint_temp_line_during_rotation(Graphics gr0, PointF rotation_pt, double rot_angle_rad)
+        {
+            //// Paint the lines while being rotated (to give user the idea how the lines will be after rotation)
+            // Save graphics
+            GraphicsState g_state = gr0.Save();
+
+            gr0.TranslateTransform(rotation_pt.X, rotation_pt.Y);
+
+            gr0.RotateTransform((float)(rot_angle_rad * (180/Math.PI)));
+
+            gr0.TranslateTransform(-rotation_pt.X, -rotation_pt.Y);
+            paint_lines(gr0);
+
+            //Restore graphics
+            gr0.Restore(g_state);
+        }
+
+
+        
+        //  private void modify_translation()
+        //  {
+        //      // Displays the MessageBox.
+        //      DialogResult result = MessageBox.Show("Duplicate?", "Translate Transform", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+        //      // Check the user result
+        //      if (result == DialogResult.Cancel)
+        //          return;
+
+        //      bool duplicate_transformation = false;
+        //      if (result == DialogResult.Yes)
+        //          duplicate_transformation = true;
+
+        //      // Translation distance
+        //      double tx = this._interim_obj.click_pts[1].x - this._interim_obj.click_pts[0].x;
+        //      double ty = this._interim_obj.click_pts[1].y - this._interim_obj.click_pts[0].y;
+
+        //     // Translate lines
+        //     if(this._interim_obj.selected_lines.Count>0)
+        //      {
+        //          modify_translation_lines(tx, ty, duplicate_transformation);
+        //      }
+
+        //     // Translate arcs
+        //     if(this._interim_obj.selected_arcs.Count>0)
+        //      {
+        //          modify_translation_arcs(tx, ty, duplicate_transformation);
+        //      }
+
+        //      //// Delete points
+        //      //if (duplicate_transformation == false && (this._interim_obj.selected_lines.Count > 0 || this._interim_obj.selected_arcs.Count > 0))
+        //      //{
+        //      //    // Remove disassociated points
+        //      //    delete_points();
+        //      //}
+
+        //  }
+
+        //  private void modify_translation_lines(double tx,double ty, bool duplicate_transformation)
+        //  {
+        //      // Create temporary lines
+        //    //  List<lines_store> temp_lines = new List<lines_store>();
+
+        //      // Points, Length and angle
+        //      List<PointF> interim_click_pts = new List<PointF>(); // [0,1], [2,3], [4,5] ...
+        //      List<double> interim_length = new List<double>(); // [0], [1], [2] ...
+        //      List<double> interim_angle = new List<double>(); // [0], [1], [2] ...
+        //      int sel_count = 0;
+
+        //      foreach (lines_store selected_line in this._interim_obj.selected_lines)
+        //      {
+        //          points_store s_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_start_id));
+        //          points_store e_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_end_id));
+
+        //          // Apply the translation
+        //          s_pt = new points_store(selected_line.pt_start_id, (s_pt.x + tx), (s_pt.y + ty));
+        //          e_pt = new points_store(selected_line.pt_end_id, (e_pt.x + tx), (e_pt.y + ty));
+
+        //          // Start and end point
+        //          interim_click_pts.Add(s_pt.get_point); // 0, 2, 4, ...
+        //          interim_click_pts.Add(e_pt.get_point); // 1, 3, 5, ...
+
+        //          // Length
+        //          interim_length.Add(gfunctions.get_length(s_pt.get_point, e_pt.get_point));
+        //          // Angle
+        //          interim_angle.Add(gfunctions.get_angle_deg(s_pt.get_point, e_pt.get_point));
+        //          sel_count++;
+        //      }
+
+        //      if (duplicate_transformation == false)
+        //      {
+        //          // No duplicates so remove the selected member
+        //          delete_lines(interim_obj.selected_lines);
+        //          delete_points();
+        //      }
+
+        //      // Translate the member
+        //      for (int i = 0; i < sel_count; i++)
+        //      {
+        //          // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+        //          List<int> all_existing_member_ids = new List<int>();
+        //          foreach (lines_store lines in geom_obj.all_lines)
+        //          {
+        //              all_existing_member_ids.Add(lines.line_id);
+        //          }
+        //          foreach (arcs_store arcs in geom_obj.all_arcs)
+        //          {
+        //              all_existing_member_ids.Add(arcs.arc_id);
+        //          }
+
+        //          int member_id = get_unique_member_id(all_existing_member_ids);
+        //          snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+        //          points_store s_pt = snap_obj.get_snap_point(interim_click_pts[i * 2], geom_obj.all_end_pts);
+        //          points_store e_pt = snap_obj.get_snap_point(interim_click_pts[(i * 2) + 1], geom_obj.all_end_pts);
+
+        //          // Add line
+        //          this._geom_obj.add_line(member_id, s_pt, e_pt, interim_length[i], interim_angle[i]);
+        //      }
+
+        //  }
+
+        //  private void modify_translation_arcs(double tx, double ty, bool duplicate_transformation)
+        //  {
+        //      // Create temporary arcs
+        ////      List<arcs_store> temp_arcs = new List<arcs_store>();
+
+        //      // Points, Length and angle
+        //      List<PointF> interim_click_pts = new List<PointF>(); // [0,1], [2,3], [4,5] ...
+        //      List<double> interim_length = new List<double>(); // [0], [1], [2] ...
+        //      List<double> interim_angle = new List<double>(); // [0], [1], [2] ...
+        //      int sel_count = 0;
+
+        //      foreach (arcs_store selected_arc in this._interim_obj.selected_arcs)
+        //      {
+        //          points_store chord_s_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_arc.pt_chord_start_id));
+        //          points_store chord_e_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_arc.pt_chord_end_id));
+
+        //          // Apply the translation
+        //          chord_s_pt = new points_store(selected_arc.pt_chord_start_id, (chord_s_pt.x + tx), (chord_s_pt.y + ty));
+        //          chord_e_pt = new points_store(selected_arc.pt_chord_end_id, (chord_e_pt.x + tx), (chord_e_pt.y + ty));
+
+        //          PointF arc_cntrl_pt = new PointF( (float)(selected_arc.cntrl_pt_on_arc.X + tx), (float)(selected_arc.cntrl_pt_on_arc.Y + ty));
+        //          PointF arc_center_pt = new PointF((float)(selected_arc.arc_center_pt.X + tx), (float)(selected_arc.arc_center_pt.Y + ty));
+
+        //          // Chord start and end point
+        //          interim_click_pts.Add(chord_s_pt.get_point); // 0, 4, 8, ...
+        //          interim_click_pts.Add(chord_e_pt.get_point); // 1, 5, 9, ...
+        //          interim_click_pts.Add(arc_cntrl_pt); // 2, 6, 10, ...
+        //          interim_click_pts.Add(arc_center_pt); // 3, 7, 11, ...
+
+        //          // Chord Length
+        //          interim_length.Add(gfunctions.get_length(chord_s_pt.get_point, chord_e_pt.get_point)); // 0, 2, 4, ...
+        //          // Radius Length
+        //          interim_length.Add(gfunctions.get_length( arc_center_pt , arc_cntrl_pt)); // 1, 3, 5, ...
+        //          // Chord Angle
+        //          interim_angle.Add(gfunctions.get_angle_deg(chord_s_pt.get_point, chord_e_pt.get_point));// 0, 2, 4, ...
+        //          // Radius Angle
+        //          interim_angle.Add(gfunctions.get_angle_deg(arc_center_pt, arc_cntrl_pt));// 1, 3, 5, ...
+
+        //          sel_count++;
+        //      }
+
+        //      if (duplicate_transformation == false)
+        //      {
+        //          // No duplicates so remove the selected member
+        //          delete_arcs(interim_obj.selected_arcs);
+        //          delete_points();
+        //      }
+
+        //      // Translate the member
+        //      for (int i = 0; i < sel_count; i++)
+        //      {
+        //          // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+        //          List<int> all_existing_member_ids = new List<int>();
+        //          foreach (lines_store lines in geom_obj.all_lines)
+        //          {
+        //              all_existing_member_ids.Add(lines.line_id);
+        //          }
+        //          foreach (arcs_store arcs in geom_obj.all_arcs)
+        //          {
+        //              all_existing_member_ids.Add(arcs.arc_id);
+        //          }
+
+        //          int member_id = get_unique_member_id(all_existing_member_ids);
+        //          snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+        //          points_store s_pt = snap_obj.get_snap_point(interim_click_pts[i * 4], geom_obj.all_end_pts);
+        //          points_store e_pt = snap_obj.get_snap_point(interim_click_pts[(i * 4) + 1], geom_obj.all_end_pts);
+
+        //          // Add line
+        //          this._geom_obj.add_arc(member_id, s_pt, e_pt, interim_length[(i*2)], interim_angle[(i*2)], 
+        //              interim_length[(i * 2)+1], interim_angle[(i * 2)+1], interim_click_pts[(i * 4)+2], interim_click_pts[(i * 4) + 3]);
+        //      }
+
+        //  }
+
+
+        
+        public void modify_member(int c_state)
+        {
+            // Processing Modify member
+            switch (c_state)
+            {
+                case 6:
+                    {
+                        // Translate modification
+
+                        // modify_translation(this);
+                        break;
+                    }
+                case 7:
+                    {
+                        // Rotate modification
+                        // modify_rotation();
+                        break;
+                    }
+                case 8:
+                    {
+                        // Mirror modification
+                        modify_mirror();
+                        break;
+                    }
+            }
+        }
+
+
+        private void modify_rotation()
+        {
+            // Displays the MessageBox.
+            DialogResult result = MessageBox.Show("Duplicate?", "Rotate Transform", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            // Check the user result
+            if (result == DialogResult.Cancel)
+                return;
+
+            bool duplicate_transformation = false;
+            if (result == DialogResult.Yes)
+                duplicate_transformation = true;
+
+            // Get the rotation point and rotation angle
+            PointF rotation_pt = this._interim_obj.click_pts[0].get_point;
+            double rot_angle_rad = -1.0 * gfunctions.get_angle_rad(this._interim_obj.click_pts[0].get_point, this._interim_obj.click_pts[1].get_point);
+
+            // Create temporary lines
+            List<lines_store> temp_lines = new List<lines_store>();
+
+            // Points, Length and angle
+            List<PointF> interim_click_pts = new List<PointF>(); // [0,1], [2,3], [4,5] ...
+            List<double> interim_length = new List<double>(); // [0], [1], [2] ...
+            List<double> interim_angle = new List<double>(); // [0], [1], [2] ...
+            int sel_count = 0;
+
+            foreach (lines_store selected_line in this._interim_obj.selected_lines)
+            {
+                points_store s_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_start_id));
+                points_store e_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_end_id));
+
+                // Pt1
+                double rot_x1 = ((s_pt.x - rotation_pt.X) * Math.Cos(rot_angle_rad) - (s_pt.y - rotation_pt.Y) * Math.Sin(rot_angle_rad)) + rotation_pt.X;
+                double rot_y1 = ((s_pt.x - rotation_pt.X) * Math.Sin(rot_angle_rad) + (s_pt.y - rotation_pt.Y) * Math.Cos(rot_angle_rad)) + rotation_pt.Y;
+
+                // Pt2
+                double rot_x2 = ((e_pt.x - rotation_pt.X) * Math.Cos(rot_angle_rad) - (e_pt.y - rotation_pt.Y) * Math.Sin(rot_angle_rad)) + rotation_pt.X;
+                double rot_y2 = ((e_pt.x - rotation_pt.X) * Math.Sin(rot_angle_rad) + (e_pt.y - rotation_pt.Y) * Math.Cos(rot_angle_rad)) + rotation_pt.Y;
+
+                // Apply the rotation
+                s_pt = new points_store(selected_line.pt_start_id, rot_x1, rot_y1);
+                e_pt = new points_store(selected_line.pt_end_id, rot_x2, rot_y2);
+
+                // Start and end point
+                interim_click_pts.Add(s_pt.get_point); // 0, 2, 4, ...
+                interim_click_pts.Add(e_pt.get_point); // 1, 3, 5, ...
+                                                       // Length
+                interim_length.Add(gfunctions.get_length(s_pt.get_point, e_pt.get_point));
+                // Angle
+                interim_angle.Add(gfunctions.get_angle_deg(s_pt.get_point, e_pt.get_point));
+                sel_count++;
+            }
+
+            if (duplicate_transformation == false)
+            {
+                // No duplicates so remove the selected member
+                delete_member();
+            }
+
+
+            // Rotate the member
+            for (int i = 0; i < sel_count; i++)
+            {
+                // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+                List<int> all_existing_member_ids = new List<int>();
+                foreach (lines_store lines in geom_obj.all_lines)
+                {
+                    all_existing_member_ids.Add(lines.line_id);
+                }
+
+                int member_id = get_unique_member_id(all_existing_member_ids);
+                snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+                points_store s_pt = snap_obj.get_snap_point(interim_click_pts[i * 2], geom_obj.all_end_pts);
+                points_store e_pt = snap_obj.get_snap_point(interim_click_pts[(i * 2) + 1], geom_obj.all_end_pts);
+
+                // Add line
+                this._geom_obj.add_line(member_id, s_pt, e_pt, interim_length[i], interim_angle[i]);
+            }
+        }
+
+        private void modify_mirror()
+        {
+            // Displays the MessageBox.
+            DialogResult result = MessageBox.Show("Duplicate?", "Mirror Transform", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            // Check the user result
+            if (result == DialogResult.Cancel)
+                return;
+
+            bool duplicate_transformation = false;
+            if (result == DialogResult.Yes)
+                duplicate_transformation = true;
+
+            // Get the mirror point and mirror line angle
+            PointF rotation_pt = this._interim_obj.click_pts[0].get_point;
+            double rot_angle_rad = -1.0 * gfunctions.get_angle_rad(this._interim_obj.click_pts[0].get_point, this._interim_obj.click_pts[1].get_point);
+
+            // Create temporary lines
+            List<lines_store> temp_lines = new List<lines_store>();
+
+            // Points, Length and angle
+            List<PointF> interim_click_pts = new List<PointF>(); // [0,1], [2,3], [4,5] ...
+            List<double> interim_length = new List<double>(); // [0], [1], [2] ...
+            List<double> interim_angle = new List<double>(); // [0], [1], [2] ...
+            int sel_count = 0;
+
+            foreach (lines_store selected_line in this._interim_obj.selected_lines)
+            {
+                points_store s_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_start_id));
+                points_store e_pt = this.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_end_id));
+
+                // Pt1
+                double rot_x1 = ((s_pt.x - rotation_pt.X) * Math.Cos(2 * rot_angle_rad) + (s_pt.y - rotation_pt.Y) * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+                double rot_y1 = ((s_pt.x - rotation_pt.X) * Math.Sin(2 * rot_angle_rad) - (s_pt.y - rotation_pt.Y) * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+
+                // Pt2
+                double rot_x2 = ((e_pt.x - rotation_pt.X) * Math.Cos(2 * rot_angle_rad) + (e_pt.y - rotation_pt.Y) * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+                double rot_y2 = ((e_pt.x - rotation_pt.X) * Math.Sin(2 * rot_angle_rad) - (e_pt.y - rotation_pt.Y) * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+
+                // Apply the mirror
+                s_pt = new points_store(selected_line.pt_start_id, rot_x1, rot_y1);
+                e_pt = new points_store(selected_line.pt_end_id, rot_x2, rot_y2);
+
+                // Start and end point
+                interim_click_pts.Add(s_pt.get_point); // 0, 2, 4, ...
+                interim_click_pts.Add(e_pt.get_point); // 1, 3, 5, ...
+                                                       // Length
+                interim_length.Add(gfunctions.get_length(s_pt.get_point, e_pt.get_point));
+                // Angle
+                interim_angle.Add(gfunctions.get_angle_deg(s_pt.get_point, e_pt.get_point));
+                sel_count++;
+            }
+
+            if (duplicate_transformation == false)
+            {
+                // No duplicates so remove the selected member
+                delete_member();
+            }
+
+
+            // Mirror the member
+            for (int i = 0; i < sel_count; i++)
+            {
+                // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+                List<int> all_existing_member_ids = new List<int>();
+                foreach (lines_store lines in geom_obj.all_lines)
+                {
+                    all_existing_member_ids.Add(lines.line_id);
+                }
+
+                int member_id = get_unique_member_id(all_existing_member_ids);
+                snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+                points_store s_pt = snap_obj.get_snap_point(interim_click_pts[i * 2], geom_obj.all_end_pts);
+                points_store e_pt = snap_obj.get_snap_point(interim_click_pts[(i * 2) + 1], geom_obj.all_end_pts);
+
+                // Add line
+                this._geom_obj.add_line(member_id, s_pt, e_pt, interim_length[i], interim_angle[i]);
+            }
+
+        }
+
+
+
+
+            //public void add_member(int c_state)
+        //{
+        //    // Processing Add member
+        //    switch (c_state)
+        //    {
+        //        case 1:
+        //            {
+        //                add_line();
+        //                break;
+        //            }
+        //        case 2:
+        //            {
+        //                // Not implemented
+        //                break;
+        //            }
+        //        case 3:
+        //            {
+        //                add_arc1();
+        //                break;
+        //            }
+        //        case 4:
+        //            {
+        //                // Not implemented
+        //                break;
+        //            }
+        //        case 5:
+        //            {
+        //                add_bezier();
+        //                break;
+        //            }
+        //    }
+        //}
+
+        private void add_line()
+        {
+            // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+            List<int> all_existing_member_ids = new List<int>();
+            // Get all line ids
+            foreach (lines_store lines in geom_obj.all_lines)
+            {
+                all_existing_member_ids.Add(lines.line_id);
+            }
+            // Get all arc ids
+            foreach (arcs_store arcs in geom_obj.all_arcs)
+            {
+                all_existing_member_ids.Add(arcs.arc_id);
+            }
+
+            int member_id = get_unique_member_id(all_existing_member_ids);
+
+            // Add line
+            this._geom_obj.add_line(member_id, this._interim_obj.click_pts[0], this._interim_obj.click_pts[1], this._interim_obj.l_length[0], this._interim_obj.l_angle[0]);
+        }
+
+        private void add_arc1()
+        {
+            // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+            List<int> all_existing_member_ids = new List<int>();
+            // Get all line ids
+            foreach (lines_store lines in geom_obj.all_lines)
+            {
+                all_existing_member_ids.Add(lines.line_id);
+            }
+            // Get all arc ids
+            foreach (arcs_store arcs in geom_obj.all_arcs)
+            {
+                all_existing_member_ids.Add(arcs.arc_id);
+            }
+
+            int member_id = get_unique_member_id(all_existing_member_ids);
+
+            // Add Arc
+            this._geom_obj.add_arc(member_id, this._interim_obj.click_pts[0], this._interim_obj.click_pts[1],
+                this._interim_obj.l_length[0], this._interim_obj.l_angle[0], this._interim_obj.l_length[1], this._interim_obj.l_angle[1],
+                 this._interim_obj.click_pts[2].get_point, this._interim_obj.click_pts[3].get_point);
+        }
+
+        private void add_bezier()
+        {
+
+        }
+
+
+
+
+              private void line_line_intersection()
+        {
+            int i = 0, j = 0;
+            // Intersect member
+            // Line - Line intersection
+            // Get all the lines and make a tuple
+            List<Tuple<int, PointF, PointF>> temp_store_selected_lines = new List<Tuple<int, PointF, PointF>>();
+            HashSet<lines_store> lines_broken = new HashSet<lines_store>();
+
+            foreach (lines_store ln in this.histU_obj.interim_obj.selected_lines)
+            {
+                PointF ln_p = this.histU_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_start_id)).get_point;
+                PointF ln_q = this.histU_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_end_id)).get_point;
+
+                // Add to the tuple
+                temp_store_selected_lines.Add(new Tuple<int, PointF, PointF>(ln.line_id, ln_p, ln_q));
+            }
+
+
+
+
+
+            bool is_intersection;
+            // Emergency exit just in case the operation is not feasible
+            int emergency_exit = 0;
+            do
+            {
+                PointF ln1_p = new PointF(0,0), ln1_q = new PointF(0, 0);
+                PointF ln2_p = new PointF(0, 0), ln2_q = new PointF(0, 0);
+                is_intersection = false;
+
+                for (i = 0; i < (temp_store_selected_lines.Count - 1); i++)
+                {
+                    for (j = i + 1; j < temp_store_selected_lines.Count; j++)
+                    {
+                        // Get the points of lines
+                        ln1_p = temp_store_selected_lines[i].Item2;
+                        ln1_q = temp_store_selected_lines[i].Item3;
+
+                        ln2_p = temp_store_selected_lines[j].Item2;
+                        ln2_q = temp_store_selected_lines[j].Item3;
+                        // Check intesection
+                        is_intersection = gfunctions.Is_lines_intersect(ln1_p, ln1_q, ln2_p, ln2_q);
+
+                        if (is_intersection == true)
+                        {
+                            // Exit the inner loop
+                            break;
+                        }
+                    }
+                    if (is_intersection == true)
+                    {
+                        // Exit the inner loop
+                        break;
+                    }
+                }
+                // Line i & j intersects
+                if (is_intersection == true)
+                {
+                    // mark the lines for deletion if the id is not -100 (this means the line will be broken into two and removed from the original list)
+                    if (temp_store_selected_lines[j].Item1 != -100)
+                    {
+                        lines_broken.Add(this.histU_obj.geom_obj.all_lines.Last(obj => obj.Equals(temp_store_selected_lines[j].Item1)));
+                    }
+                    if (temp_store_selected_lines[i].Item1 != -100)
+                    {
+                        lines_broken.Add(this.histU_obj.geom_obj.all_lines.Last(obj => obj.Equals(temp_store_selected_lines[i].Item1)));
+                    }
+
+                    // Get the intersection point
+                    PointF intersection_pt = gfunctions.intersection_point(ln1_p, ln1_q, ln2_p, ln2_q);
+
+                    // remove the lines which are intersecting (remove j first and then i)
+                    temp_store_selected_lines.RemoveAt(j);
+                    temp_store_selected_lines.RemoveAt(i);
+
+
+                    if (gfunctions.is_intersection_line_valid(ln1_p, intersection_pt) == false ||
+                        gfunctions.is_intersection_line_valid(ln1_q, intersection_pt) == false ||
+                            gfunctions.is_intersection_line_valid(ln2_p, intersection_pt) == false ||
+                        gfunctions.is_intersection_line_valid(ln2_q, intersection_pt) == false)
+                    {
+                        // something went wrong !! usually the intersection lines are too small
+                        is_intersection = false;
+                        break;
+                    }
+
+                    // Add 4 new lines
+                    temp_store_selected_lines.Add(new Tuple<int, PointF, PointF>(-100, ln1_p, intersection_pt));
+                    temp_store_selected_lines.Add(new Tuple<int, PointF, PointF>(-100, ln1_q, intersection_pt));
+                    temp_store_selected_lines.Add(new Tuple<int, PointF, PointF>(-100, ln2_p, intersection_pt));
+                    temp_store_selected_lines.Add(new Tuple<int, PointF, PointF>(-100, ln2_q, intersection_pt));
+
+                    //// Error check below
+                    //string rslt = "";
+                    //foreach(Tuple<int, points_store, points_store> t_line in temp_store_selected_lines)
+                    //{
+                    //    rslt = rslt + "p:" +  t_line.Item2.str_node_coord + " q:" + t_line.Item3.str_node_coord + Environment.NewLine;
+                    //}
+
+                    //MessageBox.Show(rslt);
+                }
+                emergency_exit++;
+                if (emergency_exit > 1000)
+                {
+                    MessageBox.Show("Intersection operation failed", "Error!! Samson Mano", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.histU_obj.cancel_operation();
+                    return;
+                }
+
+            } while (is_intersection == true);
+
+
+            if (lines_broken.Count != 0)
+            {
+                // Delete the lines which are interseted ak.a broken into two pieces
+                (new delete_operation_control()).delete_lines(this.histU_obj, lines_broken);
+
+
+                this.selected_line_count = 0;
+                foreach (Tuple<int, PointF, PointF> broken_pieces in temp_store_selected_lines)
+                {
+                    interim_click_pts.Add(broken_pieces.Item2);
+                    interim_click_pts.Add(broken_pieces.Item3);
+
+                    // Length
+                    interim_length.Add(gfunctions.get_length(broken_pieces.Item2, broken_pieces.Item3));
+                    // Angle
+                    interim_angle.Add(gfunctions.get_angle_deg(broken_pieces.Item2, broken_pieces.Item3));
+
+                    this.selected_line_count++;
+                }
+
+
+                for (i = 0; i < this.selected_line_count; i++)
+                {
+                    // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+                    List<int> all_existing_member_ids = new List<int>();
+                    foreach (lines_store lines in this.histU_obj.geom_obj.all_lines)
+                    {
+                        all_existing_member_ids.Add(lines.line_id);
+                    }
+
+                    int member_id = this.histU_obj.get_unique_member_id(all_existing_member_ids);
+                    this.histU_obj.snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+                    points_store s_pt = this.histU_obj.snap_obj.get_snap_point(interim_click_pts[i * 2], this.histU_obj.geom_obj.all_end_pts);
+                    points_store e_pt = this.histU_obj.snap_obj.get_snap_point(interim_click_pts[(i * 2) + 1], this.histU_obj.geom_obj.all_end_pts);
+
+                    // Add line
+                    this.histU_obj.geom_obj.add_line(member_id, s_pt, e_pt, interim_length[i], interim_angle[i]);
+                }
+            }
+        }
+
+
+            #region "Add, modify member"
+    
+        //public void delete_member()
+        //{
+        //    // Delete member
+        //    // Delete Lines
+        //    delete_lines(interim_obj.selected_lines);
+        //    // Delter Arcs
+        //    delete_arcs(interim_obj.selected_arcs);
+
+        //    // Remove disassociated points
+        //    delete_points();
+
+        //    // complete operation
+        //    cancel_operation();
+        //}
+
+        //private void delete_lines(HashSet<lines_store> r_lines)
+        //{
+        //    this._geom_obj.remove_lines(r_lines);
+        //}
+
+        //private void delete_arcs(HashSet<arcs_store> r_arcs)
+        //{
+        //    this._geom_obj.remove_arcs(r_arcs);
+        //}
+
+        //private void delete_points()
+        //{
+        //    HashSet<points_store> all_points_associated_with_member = new HashSet<points_store>();
+
+        //    // All points associated with lines
+        //    foreach (lines_store lines in geom_obj.all_lines)
+        //    {
+        //        all_points_associated_with_member.Add(geom_obj.all_end_pts.Last(obj => obj.Equals(lines.pt_end_id)));
+        //        all_points_associated_with_member.Add(geom_obj.all_end_pts.Last(obj => obj.Equals(lines.pt_start_id)));
+        //    }
+
+        //    // All points associated with arcs
+        //    foreach (arcs_store arcs in geom_obj.all_arcs)
+        //    {
+        //        all_points_associated_with_member.Add(geom_obj.all_end_pts.Last(obj => obj.Equals(arcs.pt_chord_end_id)));
+        //        all_points_associated_with_member.Add(geom_obj.all_end_pts.Last(obj => obj.Equals(arcs.pt_chord_start_id)));
+        //    }
+
+        //    IEnumerable<points_store> free_points_e = interim_obj.selected_points.Except(all_points_associated_with_member);
+        //    // Delete points
+        //    this._geom_obj.remove_points(free_points_e.ToHashSet());
+        //}
+
+        //public void intersect_member()
+        //{
+        //    // Displays the MessageBox.
+        //    DialogResult result = MessageBox.Show("Break all segments?", "Intersection", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        //    // Check the user result
+        //    if (result == DialogResult.No || interim_obj.selected_lines.Count < 2)
+        //    {
+        //        cancel_operation();
+        //        return;
+        //    }
+
+        //    int i = 0, j = 0;
+        //    // Intersect member
+        //    // Line - Line intersection
+        //    // Get all the lines and make a tuple
+        //    List<Tuple<int, points_store, points_store>> temp_store_selected_lines = new List<Tuple<int, points_store, points_store>>();
+        //    HashSet<lines_store> lines_broken = new HashSet<lines_store>();
+
+        //    foreach (lines_store ln in interim_obj.selected_lines)
+        //    {
+        //        points_store ln1_p = geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_start_id));
+        //        points_store ln1_q = geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_end_id));
+
+        //        // Add to the tuple
+        //        temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(ln.line_id, ln1_p, ln1_q));
+        //    }
+
+        //    bool is_intersection;
+        //    // Emergency exit just in case the operation is not feasible
+        //    int emergency_exit = 0;
+        //    do
+        //    {
+        //        points_store ln1_p = null, ln1_q = null;
+        //        points_store ln2_p = null, ln2_q = null;
+        //        is_intersection = false;
+
+        //        for (i = 0; i < (temp_store_selected_lines.Count - 1); i++)
+        //        {
+        //            for (j = i + 1; j < temp_store_selected_lines.Count; j++)
+        //            {
+        //                // Get the points of lines
+        //                ln1_p = temp_store_selected_lines[i].Item2;
+        //                ln1_q = temp_store_selected_lines[i].Item3;
+
+        //                ln2_p = temp_store_selected_lines[j].Item2;
+        //                ln2_q = temp_store_selected_lines[j].Item3;
+        //                // Check intesection
+        //                is_intersection = gfunctions.Is_lines_intersect(ln1_p, ln1_q, ln2_p, ln2_q);
+
+        //                if (is_intersection == true)
+        //                {
+        //                    // Exit the inner loop
+        //                    break;
+        //                }
+        //            }
+        //            if (is_intersection == true)
+        //            {
+        //                // Exit the inner loop
+        //                break;
+        //            }
+        //        }
+        //        // Line i & j intersects
+        //        if (is_intersection == true)
+        //        {
+        //            // mark the lines for deletion if the id is not -100 (this means the line will be broken into two and removed from the original list)
+        //            if (temp_store_selected_lines[j].Item1 != -100)
+        //            {
+        //                lines_broken.Add(geom_obj.all_lines.Last(obj => obj.Equals(temp_store_selected_lines[j].Item1)));
+        //            }
+        //            if (temp_store_selected_lines[i].Item1 != -100)
+        //            {
+        //                lines_broken.Add(geom_obj.all_lines.Last(obj => obj.Equals(temp_store_selected_lines[i].Item1)));
+        //            }
+
+        //            // Get the intersection point
+        //            points_store intersection_pt = gfunctions.intersection_point(ln1_p, ln1_q, ln2_p, ln2_q);
+
+        //            // remove the lines which are intersecting (remove j first and then i)
+        //            temp_store_selected_lines.RemoveAt(j);
+        //            temp_store_selected_lines.RemoveAt(i);
+
+
+        //            if (gfunctions.is_intersection_line_valid(ln1_p, intersection_pt) == false ||
+        //                gfunctions.is_intersection_line_valid(ln1_q, intersection_pt) == false ||
+        //                    gfunctions.is_intersection_line_valid(ln2_p, intersection_pt) == false ||
+        //                gfunctions.is_intersection_line_valid(ln2_q, intersection_pt) == false)
+        //            {
+        //                // something went wrong !! usually the intersection lines are too small
+        //                is_intersection = false;
+        //                break;
+        //            }
+
+        //            // Add 4 new lines
+        //            temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(-100, ln1_p, intersection_pt));
+        //            temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(-100, ln1_q, intersection_pt));
+        //            temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(-100, ln2_p, intersection_pt));
+        //            temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(-100, ln2_q, intersection_pt));
+
+        //            //// Error check below
+        //            //string rslt = "";
+        //            //foreach(Tuple<int, points_store, points_store> t_line in temp_store_selected_lines)
+        //            //{
+        //            //    rslt = rslt + "p:" +  t_line.Item2.str_node_coord + " q:" + t_line.Item3.str_node_coord + Environment.NewLine;
+        //            //}
+
+        //            //MessageBox.Show(rslt);
+        //        }
+        //        emergency_exit++;
+        //        if (emergency_exit > 1000)
+        //        {
+        //            MessageBox.Show("Intersection operation failed", "Error!! Samson Mano", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            cancel_operation();
+        //            return;
+        //        }
+
+        //    } while (is_intersection == true);
+
+
+        //    if (lines_broken.Count != 0)
+        //    {
+        //        // Delete the lines which are interseted ak.a broken into two pieces
+        //        delete_lines(lines_broken);
+
+        //        //Add all the new lines
+        //        // Interim Points, Length and angle
+        //        List<PointF> interim_click_pts = new List<PointF>(); // [0,1], [2,3], [4,5] ...
+        //        List<double> interim_length = new List<double>(); // [0], [1], [2] ...
+        //        List<double> interim_angle = new List<double>(); // [0], [1], [2] ...
+
+        //        int sel_count = 0;
+        //        foreach (Tuple<int, points_store, points_store> broken_pieces in temp_store_selected_lines)
+        //        {
+        //            interim_click_pts.Add(broken_pieces.Item2.get_point);
+        //            interim_click_pts.Add(broken_pieces.Item3.get_point);
+
+        //            // Length
+        //            interim_length.Add(gfunctions.get_length(broken_pieces.Item2.get_point, broken_pieces.Item3.get_point));
+        //            // Angle
+        //            interim_angle.Add(gfunctions.get_angle_deg(broken_pieces.Item2.get_point, broken_pieces.Item3.get_point));
+
+        //            sel_count++;
+        //        }
+
+
+        //        for (i = 0; i < sel_count; i++)
+        //        {
+        //            // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+        //            List<int> all_existing_member_ids = new List<int>();
+        //            foreach (lines_store lines in geom_obj.all_lines)
+        //            {
+        //                all_existing_member_ids.Add(lines.line_id);
+        //            }
+
+        //            int member_id = get_unique_member_id(all_existing_member_ids);
+        //            snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+        //            points_store s_pt = snap_obj.get_snap_point(interim_click_pts[i * 2], geom_obj.all_end_pts);
+        //            points_store e_pt = snap_obj.get_snap_point(interim_click_pts[(i * 2) + 1], geom_obj.all_end_pts);
+
+        //            // Add line
+        //            this._geom_obj.add_line(member_id, s_pt, e_pt, interim_length[i], interim_angle[i]);
+        //        }
+        //    }
+
+        //    // complete operation
+        //    cancel_operation();
+        //}
+
+        //public void split_member()
+        //{
+        //    // Split member
+        //    // Displays the MessageBox. if more than 1 lines are splitted
+        //    if (interim_obj.selected_lines.Count > 1)
+        //    {
+        //        DialogResult result = MessageBox.Show("Split all segments?", "Split", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        //        // Check the user result
+        //        if (result == DialogResult.No)
+        //        {
+        //            cancel_operation();
+        //            return;
+        //        }
+        //    }
+
+        //    // Get the split parameter at t
+        //    double param_t = 0.5;
+        //    if (gfunctions.InputBox("Paramterization split", "Split the line at t [0,1] = ", ref param_t) == DialogResult.Cancel)
+        //    {
+        //        cancel_operation();
+        //        return;
+        //    }
+
+
+        //    if (param_t <= 0.05 || param_t >= 0.95)
+        //    {
+        //        // invalid split location
+        //        cancel_operation();
+        //        return;
+        //    }
+
+
+        //    // Split the lines
+        //    // Get all the lines and make a tuple
+        //    int i = 0;
+        //    List<Tuple<int, points_store, points_store>> temp_store_selected_lines = new List<Tuple<int, points_store, points_store>>();
+        //    HashSet<lines_store> lines_split = new HashSet<lines_store>();
+        //    int split_line_cout = interim_obj.selected_lines.Count;
+
+
+        //    foreach (lines_store ln in interim_obj.selected_lines)
+        //    {
+        //        points_store ln1_p = geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_start_id));
+        //        points_store ln1_q = geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_end_id));
+
+        //        // Add to the tuple
+        //        temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(ln.line_id, ln1_p, ln1_q));
+        //    }
+
+        //    for (i = 0; i < split_line_cout; i++)
+        //    {
+        //        double tx = temp_store_selected_lines[0].Item2.x * (1 - param_t) + temp_store_selected_lines[0].Item3.x * param_t;
+        //        double ty = temp_store_selected_lines[0].Item2.y * (1 - param_t) + temp_store_selected_lines[0].Item3.y * param_t;
+
+        //        points_store split_pt = new points_store(-100, tx, ty);
+
+        //        // new two lines p1 -> split_pt -> pt2
+        //        temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(-100, temp_store_selected_lines[0].Item2, split_pt));
+        //        temp_store_selected_lines.Add(new Tuple<int, points_store, points_store>(-100, split_pt, temp_store_selected_lines[0].Item3));
+
+        //        temp_store_selected_lines.RemoveAt(0);
+        //    }
+
+        //    // Delete the lines at split point
+        //    delete_lines(interim_obj.selected_lines);
+
+        //    //Add all the new lines
+        //    // Interim Points, Length and angle
+        //    List<PointF> interim_click_pts = new List<PointF>(); // [0,1], [2,3], [4,5] ...
+        //    List<double> interim_length = new List<double>(); // [0], [1], [2] ...
+        //    List<double> interim_angle = new List<double>(); // [0], [1], [2] ...
+
+        //    int sel_count = 0;
+        //    foreach (Tuple<int, points_store, points_store> split_lines in temp_store_selected_lines)
+        //    {
+        //        interim_click_pts.Add(split_lines.Item2.get_point);
+        //        interim_click_pts.Add(split_lines.Item3.get_point);
+
+        //        // Length
+        //        interim_length.Add(gfunctions.get_length(split_lines.Item2.get_point, split_lines.Item3.get_point));
+        //        // Angle
+        //        interim_angle.Add(gfunctions.get_angle_deg(split_lines.Item2.get_point, split_lines.Item3.get_point));
+
+        //        sel_count++;
+        //    }
+
+
+        //    for (i = 0; i < sel_count; i++)
+        //    {
+        //        // Find all the exisitng member ids (Must revise below to be more efficient) !!!!
+        //        List<int> all_existing_member_ids = new List<int>();
+        //        foreach (lines_store lines in geom_obj.all_lines)
+        //        {
+        //            all_existing_member_ids.Add(lines.line_id);
+        //        }
+
+        //        int member_id = get_unique_member_id(all_existing_member_ids);
+        //        snap_obj.clear_temp_point(); // clear temp points to get the current node
+
+        //        points_store s_pt = snap_obj.get_snap_point(interim_click_pts[i * 2], geom_obj.all_end_pts);
+        //        points_store e_pt = snap_obj.get_snap_point(interim_click_pts[(i * 2) + 1], geom_obj.all_end_pts);
+
+        //        // Add line
+        //        this._geom_obj.add_line(member_id, s_pt, e_pt, interim_length[i], interim_angle[i]);
+        //    }
+
+        //    // complete operation
+        //    cancel_operation();
+        //}
+        #endregion
+
+        
+        //public int get_unique_member_id(List<int> existing_member_ids)
+        //{
+        //    if (existing_member_ids.Count != 0)
+        //    {
+        //        int i;
+
+        //        // Sort the existing member ids list in ascending order
+        //        existing_member_ids.Sort();
+
+        //        // Find if any of the member ids are missing in an ordered int
+        //        for (i = 0; i < existing_member_ids.Count; i++)
+        //        {
+        //            if (existing_member_ids[i] != i)
+        //            {
+        //                return i;
+        //            }
+        //        }
+        //        // no member id is missing in an ordered list so add to the end
+        //        return (existing_member_ids.Count);
+        //    }
+        //    // id for the first member is 0
+        //    return 0;
+        //}
+
+
+
+            public void paint_temp_arc_during_translation(Graphics gr0, double transl_x, double transl_y)
+        {
+            // Paint the arcs while being translated (to give user the idea how the arcs will be after translating)
+            // Chord start Pt
+            PointF t_chord_start_pt = new PointF((float)(this.chord_start_pt.X + transl_x), (float)(this.chord_start_pt.Y + transl_y));
+
+            // Chord end Pt
+            PointF t_chord_end_pt = new PointF((float)(this.chord_end_pt.X + transl_x), (float)(this.chord_end_pt.Y + transl_y));
+
+            // control point on arc
+            PointF t_pt_on_arc = new PointF((float)(this._cntrl_pt_on_arc.X + transl_x), (float)(this._cntrl_pt_on_arc.Y + transl_y));
+
+            // Chord point on center point
+            PointF t_arc_center = new PointF((float)(this._arc_center_pt.X + transl_x), (float)(this._arc_center_pt.Y + transl_y));
+
+            // get the arc angles
+            Tuple<double, double> t_arc_angles = gfunctions.get_arc_angles(t_chord_start_pt, t_chord_end_pt, t_pt_on_arc, t_arc_center);
+            
+            double t_arc_start_angle, t_arc_sweep_angle;
+            t_arc_start_angle = t_arc_angles.Item1;
+            t_arc_sweep_angle = t_arc_angles.Item2;
+
+            // Bounding rectangle
+            RectangleF  t_arc_bounding_box = new RectangleF((float)(t_arc_center.X - this._arc_radius), (float)(t_arc_center.Y - this._arc_radius),
+                (float)(this._arc_radius * 2.0), (float)(this._arc_radius * 2.0));
+
+            // Draw Arc
+            gr0.DrawArc(gvariables.pen_curves, t_arc_bounding_box, (float)(t_arc_start_angle), (float)(t_arc_sweep_angle));
+
+        }
+
+        public void paint_temp_arc_during_rotation(Graphics gr0, PointF rotation_pt, double rot_angle_rad)
+        {
+            // Paint the arcs while being rotated (to give user the idea how the arcs will be after rotation)
+            double rx, ry;
+            // Chord start Pt
+            PointF t_chord_start_pt = new PointF((float)(this.chord_start_pt.X -rotation_pt.X), (float)(this.chord_start_pt.Y - rotation_pt.Y));
+            rx = (t_chord_start_pt.X * Math.Cos(rot_angle_rad) - t_chord_start_pt.Y * Math.Sin(rot_angle_rad)) + rotation_pt.X;
+            ry = (t_chord_start_pt.X * Math.Sin(rot_angle_rad) + t_chord_start_pt.Y * Math.Cos(rot_angle_rad)) + rotation_pt.Y;
+            t_chord_start_pt = new PointF((float)rx, (float)ry);
+
+            // Chord end Pt
+            PointF t_chord_end_pt = new PointF((float)(this.chord_end_pt.X - rotation_pt.X), (float)(this.chord_end_pt.Y - rotation_pt.Y));
+            rx = (t_chord_end_pt.X * Math.Cos(rot_angle_rad) - t_chord_end_pt.Y * Math.Sin(rot_angle_rad)) + rotation_pt.X;
+            ry = (t_chord_end_pt.X * Math.Sin(rot_angle_rad) + t_chord_end_pt.Y * Math.Cos(rot_angle_rad)) + rotation_pt.Y;
+            t_chord_end_pt = new PointF((float)rx, (float)ry);
+
+            // control point on arc
+            PointF t_pt_on_arc = new PointF((float)(this._cntrl_pt_on_arc.X - rotation_pt.X), (float)(this._cntrl_pt_on_arc.Y - rotation_pt.Y));
+            rx = (t_pt_on_arc.X * Math.Cos(rot_angle_rad) - t_pt_on_arc.Y * Math.Sin(rot_angle_rad)) + rotation_pt.X;
+            ry = (t_pt_on_arc.X * Math.Sin(rot_angle_rad) + t_pt_on_arc.Y * Math.Cos(rot_angle_rad)) + rotation_pt.Y;
+            t_pt_on_arc = new PointF((float)rx, (float)ry);
+
+            // Chord point on center point
+            PointF t_arc_center = new PointF((float)(this._arc_center_pt.X - rotation_pt.X), (float)(this._arc_center_pt.Y - rotation_pt.Y));
+            rx = (t_arc_center.X * Math.Cos(rot_angle_rad) - t_arc_center.Y * Math.Sin(rot_angle_rad)) + rotation_pt.X;
+            ry = (t_arc_center.X * Math.Sin(rot_angle_rad) + t_arc_center.Y * Math.Cos(rot_angle_rad)) + rotation_pt.Y;
+            t_arc_center = new PointF((float)rx, (float)ry);
+
+            // get the arc angles
+            Tuple<double, double> t_arc_angles = gfunctions.get_arc_angles(t_chord_start_pt, t_chord_end_pt, t_pt_on_arc, t_arc_center);
+
+            double t_arc_start_angle, t_arc_sweep_angle;
+            t_arc_start_angle = t_arc_angles.Item1;
+            t_arc_sweep_angle = t_arc_angles.Item2;
+
+            // Bounding rectangle
+            RectangleF t_arc_bounding_box = new RectangleF((float)(t_arc_center.X - this._arc_radius), (float)(t_arc_center.Y - this._arc_radius),
+                    (float)(this._arc_radius * 2.0), (float)(this._arc_radius * 2.0));
+
+            // Draw Arc
+            gr0.DrawArc(gvariables.pen_curves, t_arc_bounding_box, (float)(t_arc_start_angle), (float)(t_arc_sweep_angle));
+        }
+
+        public void paint_temp_arc_during_mirror(Graphics gr0, PointF rotation_pt, double rot_angle_rad)
+        {
+            // Paint the arcs while being mirrored (to give user the idea how the arcs will be after mirroring)
+            double rx, ry;
+            // Chord start Pt
+            PointF t_chord_start_pt = new PointF((float)(this.chord_start_pt.X - rotation_pt.X), (float)(this.chord_start_pt.Y - rotation_pt.Y));
+            rx = (t_chord_start_pt.X * Math.Cos(2 * rot_angle_rad) + t_chord_start_pt.Y * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+            ry = (t_chord_start_pt.X * Math.Sin(2 * rot_angle_rad) - t_chord_start_pt.Y * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+            t_chord_start_pt = new PointF((float)rx, (float)ry);
+
+            // Chord end Pt
+            PointF t_chord_end_pt = new PointF((float)(this.chord_end_pt.X - rotation_pt.X), (float)(this.chord_end_pt.Y - rotation_pt.Y));
+            rx = (t_chord_end_pt.X * Math.Cos(2 * rot_angle_rad) + t_chord_end_pt.Y * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+            ry = (t_chord_end_pt.X * Math.Sin(2 * rot_angle_rad) - t_chord_end_pt.Y * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+            t_chord_end_pt = new PointF((float)rx, (float)ry);
+
+            // control point on arc
+            PointF t_pt_on_arc = new PointF((float)(this._cntrl_pt_on_arc.X - rotation_pt.X), (float)(this._cntrl_pt_on_arc.Y - rotation_pt.Y));
+            rx = (t_pt_on_arc.X * Math.Cos(2 * rot_angle_rad) + t_pt_on_arc.Y * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+            ry = (t_pt_on_arc.X * Math.Sin(2 * rot_angle_rad) - t_pt_on_arc.Y * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+            t_pt_on_arc = new PointF((float)rx, (float)ry);
+
+            // Chord point on center point
+            PointF t_arc_center = new PointF((float)(this._arc_center_pt.X - rotation_pt.X), (float)(this._arc_center_pt.Y - rotation_pt.Y));
+            rx = (t_arc_center.X * Math.Cos(2 * rot_angle_rad) + t_arc_center.Y * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+            ry = (t_arc_center.X * Math.Sin(2 * rot_angle_rad) - t_arc_center.Y * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+            t_arc_center = new PointF((float)rx, (float)ry);
+
+            // get the arc angles
+            Tuple<double, double> t_arc_angles = gfunctions.get_arc_angles(t_chord_start_pt, t_chord_end_pt, t_pt_on_arc, t_arc_center);
+
+            double t_arc_start_angle, t_arc_sweep_angle;
+            t_arc_start_angle = t_arc_angles.Item1;
+            t_arc_sweep_angle = t_arc_angles.Item2;
+
+            // Bounding rectangle
+            RectangleF t_arc_bounding_box = new RectangleF((float)(t_arc_center.X - this._arc_radius), (float)(t_arc_center.Y - this._arc_radius),
+                    (float)(this._arc_radius * 2.0), (float)(this._arc_radius * 2.0));
+
+            // Draw Arc
+            gr0.DrawArc(gvariables.pen_curves, t_arc_bounding_box, (float)(t_arc_start_angle), (float)(t_arc_sweep_angle));
+        }
+
+
+        
+            //double rx, ry;
+            //// Pt1
+            //PointF t_start_pt = new PointF((float)(start_pt.X - rotation_pt.X), (float)(start_pt.Y - rotation_pt.Y));
+            //rx = (t_start_pt.X * Math.Cos(2 * rot_angle_rad) + t_start_pt.Y * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+            //ry = (t_start_pt.X * Math.Sin(2 * rot_angle_rad) - t_start_pt.Y * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+            //t_start_pt = new PointF((float)rx, (float)ry);
+
+            //// Pt2
+            //PointF t_end_pt = new PointF((float)(end_pt.X - rotation_pt.X), (float)(end_pt.Y - rotation_pt.Y));
+            //rx = (t_end_pt.X * Math.Cos(2 * rot_angle_rad) + t_end_pt.Y * Math.Sin(2 * rot_angle_rad)) + rotation_pt.X;
+            //ry = (t_end_pt.X * Math.Sin(2 * rot_angle_rad) - t_end_pt.Y * Math.Cos(2 * rot_angle_rad)) + rotation_pt.Y;
+            //t_end_pt = new PointF((float)rx, (float)ry);
+
+            //gr0.DrawLine(gvariables.pen_curves, t_start_pt, t_end_pt);
+
+
+
+            
+                            double dx1, dy1;
+
+                            if ((histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 1].get_point.Y -
+                                histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 2].get_point.Y) == 0)
+                            {
+                                // Infinite slope m = x1-x2/y2-y2
+                                rad_pt1 = new PointF(chrd_midpt.X, (float)(chrd_midpt.Y + ht));
+                                rad_pt2 = new PointF(chrd_midpt.X, (float)(chrd_midpt.Y - ht));
+
+                                if (Length_l - Math.Round(gfunctions.get_length(rad_pt1, gvariables.cursor_on_movept), 2) <
+                                   (Length_l - Math.Round(gfunctions.get_length(rad_pt2, gvariables.cursor_on_movept), 2)))
+                                {
+                                    // Radius Point 1
+                                    click_pt = new PointF(rad_pt1.X , (float)(rad_pt1.Y+ Length_l));
+                                }
+                                else
+                                {
+                                    // Radius Point 2
+                                    click_pt = new PointF(rad_pt2.X , (float)(rad_pt2.Y- Length_l));
+                                }
+                            }
+                            else if ((histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 2].get_point.X -
+                                histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 1].get_point.X) == 0)
+                            {
+                                // Zero slope
+                                rad_pt1 = new PointF((float)(chrd_midpt.X + ht), chrd_midpt.Y);
+                                rad_pt2 = new PointF((float)(chrd_midpt.X - ht), chrd_midpt.Y);
+
+                                if (Length_l - Math.Round(gfunctions.get_length(rad_pt1, gvariables.cursor_on_movept), 2) <
+                                       (Length_l - Math.Round(gfunctions.get_length(rad_pt2, gvariables.cursor_on_movept), 2)))
+                                {
+                                    // Radius Point 1
+                                           click_pt = new PointF((float)(rad_pt1.X + Length_l),rad_pt1.Y );
+                                }
+                                else
+                                {
+                                    // Radius Point 2
+                                    click_pt = new PointF((float)(rad_pt2.X - Length_l),rad_pt2.Y );
+                                }
+                            }
+                            else
+                            {
+                                // Regular slope
+                                norm_slope = ((histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 2].get_point.X -
+                                histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 1].get_point.X) /
+                                (histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 1].get_point.Y -
+                                histU.interim_obj.click_pts[histU.interim_obj.click_pts.Count - 2].get_point.Y));
+
+                                dx1 = (ht / Math.Sqrt(1 + (norm_slope * norm_slope)));
+                                dy1 = norm_slope * dx1;
+
+                                // Radius point
+                                rad_pt1 = new PointF((float)(chrd_midpt.X + dx1), (float)(chrd_midpt.Y + dy1));
+                                rad_pt2 = new PointF((float)(chrd_midpt.X - dx1), (float)(chrd_midpt.Y - dy1));
+
+                                if (Math.Abs(Length_l - Math.Round(gfunctions.get_length(rad_pt1, gvariables.cursor_on_movept), 2)) >= gvariables.epsilon_g)
+                                {
+                                    // Radius Point 1
+                                    dx1 = (Length_l / Math.Sqrt(1 + (norm_slope * norm_slope)));
+                                    dy1 = norm_slope * dx1;
+
+                                  //  click_pt = new PointF((float)(rad_pt2.X - dx1), (float)(rad_pt2.Y - dy1));
+                                    click_pt = new PointF((float)(rad_pt1.X + dx1), (float)(rad_pt1.Y + dy1));
+                                }
+                                else
+                                {
+                                    // Radius Point 2
+                                    dx1 = (Length_l / Math.Sqrt(1 + (norm_slope * norm_slope)));
+                                    dy1 = norm_slope * dx1;
+
+                                  // click_pt = new PointF((float)(rad_pt1.X + dx1), (float)(rad_pt1.Y + dy1));
+                                    click_pt = new PointF((float)(rad_pt2.X - dx1), (float)(rad_pt2.Y - dy1));
+                                }
+                            }
+
+
+
+                                 private void paint_bounding_box(Graphics gr0)
+        {
+            double x = 0, y = 0;
+            double min_x = Double.MaxValue;
+            double min_y = Double.MaxValue;
+            double max_x = Double.MinValue;
+            double max_y = Double.MinValue;
+            int pt_count = 0;
+
+            // Paint arcs
+            foreach (arcs_store g_arc in all_arcs)
+            {
+                x = x + g_arc.arc_crown_pt.X;
+                y = y + g_arc.arc_crown_pt.Y;
+
+                min_x = Math.Min(min_x, g_arc.arc_crown_pt.X);
+                max_x = Math.Max(max_x, g_arc.arc_crown_pt.X);
+
+                min_y = Math.Min(min_y, g_arc.arc_crown_pt.Y);
+                max_y = Math.Max(max_y, g_arc.arc_crown_pt.Y);
+
+                pt_count++;
+
+                x = x + g_arc.arc_center_pt.X;
+                y = y + g_arc.arc_center_pt.Y;
+
+                min_x = Math.Min(min_x, g_arc.arc_center_pt.X);
+                max_x = Math.Max(max_x, g_arc.arc_center_pt.X);
+
+                min_y = Math.Min(min_y, g_arc.arc_center_pt.Y);
+                max_y = Math.Max(max_y, g_arc.arc_center_pt.Y);
+
+                pt_count++;
+            }
+
+
+            foreach (beziers_store g_bezier in _all_beziers)
+            {
+                for (int i =1;i<g_bezier.bezier_cntrl_pts.Count - 1;i++)
+                {
+                    x = x + g_bezier.bezier_cntrl_pts[i].X;
+                    y = y + g_bezier.bezier_cntrl_pts[i].Y;
+
+                    min_x = Math.Min(min_x, g_bezier.bezier_cntrl_pts[i].X);
+                    max_x = Math.Max(max_x, g_bezier.bezier_cntrl_pts[i].X);
+
+                    min_y = Math.Min(min_y, g_bezier.bezier_cntrl_pts[i].Y);
+                    max_y = Math.Max(max_y, g_bezier.bezier_cntrl_pts[i].Y);
+
+                    pt_count++;
+                }
+            }
+
+
+            foreach (points_store g_points in all_end_pts)
+            {
+                x = x + g_points.x;
+                y = y + g_points.y;
+
+                min_x = Math.Min(min_x, g_points.x);
+                max_x = Math.Max(max_x, g_points.x);
+
+                min_y = Math.Min(min_y, g_points.y);
+                max_y = Math.Max(max_y, g_points.y);
+
+                pt_count++;
+            }
+
+            x = x / pt_count;
+            y = y / pt_count;
+
+            gr0.DrawLine(Pens.Black, (float)x, (float)y, (float)min_x, (float)y);
+            gr0.DrawLine(Pens.Black, (float)x, (float)y, (float)max_x, (float)y);
+            gr0.DrawLine(Pens.Black, (float)x, (float)y, (float)x, (float)min_y);
+            gr0.DrawLine(Pens.Black, (float)x, (float)y, (float)x, (float)max_y);
+        }
+
+
+        
+
+        private bool winding_number_algorithm1(PointF pt, List<PointF> loop_pts)
+        {
+            double sweep_angle = 0;
+
+            for (int i = 1; i < loop_pts.Count; i++)
+            {
+                sweep_angle = sweep_angle + get_signed_inner_angle(pt, loop_pts[i - 1], loop_pts[i]);
+            }
+
+            if (Math.Round(sweep_angle, 3) != 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        
+        public void set_boundary(HashSet<polylines_store> other_poly_lines, double offset_length)
+        {
+            //// Mid line slope 
+            //int mid_index = (int)(intermediate_pts.Count * 0.5f);
+            //// Mid line Normal slope 
+            //double mid_norm_slope = (intermediate_pts.ElementAt(mid_index - 1).get_pt.X - intermediate_pts.ElementAt(mid_index + 1).get_pt.X) /
+            //    (intermediate_pts.ElementAt(mid_index + 1).get_pt.Y - intermediate_pts.ElementAt(mid_index - 1).get_pt.Y);
+
+
+            //PointF pt_w = gfunctions.get_point_at_l_m(this.mid_pt.get_pt, mid_norm_slope, offset_length, 1);
+            //PointF pt_ccw = gfunctions.get_point_at_l_m(this.mid_pt.get_pt, mid_norm_slope, offset_length, -1);
+
+            //// get all the points in counter Clock wise loop
+            //List<PointF> w_loop_pts = new List<PointF>();
+
+            //int temp_pt_id = poly_end_id;
+            //int nxt_p_index = end_ccw_edge;
+
+            //// Add the first point which is the end
+            //w_loop_pts.Add(this.mid_pt.get_pt);
+            //w_loop_pts.Add(this.end_pt.get_pt);
+
+            //while (nxt_p_index != this.poly_id)
+            //{
+            //    // Get the ccw polyline attached to the end point
+            //    polylines_store attched_ply = other_poly_lines.Last(obj => obj.Equals(nxt_p_index));
+            //    poly_pts attached_ply_end_pt = attched_ply.get_other_pt(temp_pt_id);
+
+            //    // Get the other point of the polyline and add to list
+            //    w_loop_pts.Add(attached_ply_end_pt.get_pt);
+            //    temp_pt_id = attached_ply_end_pt.p_id;
+
+            //    // Index of the next line attached in ccw direction
+            //    if (temp_pt_id == attched_ply.poly_end_id)
+            //    {
+            //        nxt_p_index = attched_ply.end_ccw_edge;
+            //    }
+            //    else if (temp_pt_id == attched_ply.poly_start_id)
+            //    {
+            //        nxt_p_index = attched_ply.start_ccw_edge;
+            //    }
+            //  }
+            //// Add the last point which is the start
+            //w_loop_pts.Add(this.start_pt.get_pt);
+
+            //this.is_ccw_border = false;
+            //this.is_w_border = false;
+
+            //if (winding_number_algorithm(pt_w, w_loop_pts) == true )
+            //{
+            //    this.is_w_border = true;
+            //}
+
+            //if(winding_number_algorithm(pt_ccw, w_loop_pts) == true)
+            //{
+            //    this.is_ccw_border = true;
+            //}
+
+            //// get all the points in clock wise loop
+            //List<PointF> ccw_loop_pts = new List<PointF>();
+            //temp_pt_id = poly_end_id;
+            //nxt_p_index = end_w_edge;
+
+            //// Add the first point which is the end
+            //ccw_loop_pts.Add(this.mid_pt.get_pt);
+            //ccw_loop_pts.Add(this.end_pt.get_pt);
+
+            //while (nxt_p_index != this.poly_id)
+            //{
+            //    // Get the cw polyline attached to the end point
+            //    polylines_store attched_ply = other_poly_lines.Last(obj => obj.Equals(nxt_p_index));
+            //    poly_pts attached_ply_end_pt = attched_ply.get_other_pt(temp_pt_id);
+
+            //    // Get the other point of the polyline and add to list
+            //    ccw_loop_pts.Add(attached_ply_end_pt.get_pt);
+            //    temp_pt_id = attached_ply_end_pt.p_id;
+
+            //    // Index of the next line attached in cw direction
+            //    if (temp_pt_id == attched_ply.poly_end_id)
+            //    {
+            //        nxt_p_index = attched_ply.end_w_edge;
+            //    }
+            //    else if (temp_pt_id == attched_ply.poly_start_id)
+            //    {
+            //        nxt_p_index = attched_ply.start_w_edge;
+            //    }
+            //}
+            //// Add the last point which is the start
+            //ccw_loop_pts.Add(this.start_pt.get_pt);
+
+            //if(this.is_ccw_border == true)
+            //{
+            //    this.is_w_border = winding_number_algorithm(pt_w, ccw_loop_pts);
+            //}
+            //else if(this.is_w_border == true)
+            //{
+            //    this.is_ccw_border = winding_number_algorithm(pt_ccw, ccw_loop_pts);
+            //}
+
+
+
+            //this.is_border = false;
+            //if (this.is_ccw_border == true && this.is_w_border == true)
+            //{
+            //    this.is_border = true;
+            //}
+
+        }
+
+
+                    //string str1 = "[";
+
+            //foreach (int l_i in this._loop_ccw_poly_ids)
+            //{
+            //    str1 = str1 + l_i.ToString() + ", ";
+            //}
+
+            //// string temp1_str = str1.Remove(str1.Length - 2, 2);
+            //str1 = str1.Remove(str1.Length - 2, 2) + " ]" + Environment.NewLine;
+
+            //str1 = str1 + "[";
+
+            //foreach (int l_i in this._loop_w_poly_ids)
+            //{
+            //    str1 = str1 + l_i.ToString() + ", ";
+            //}
+
+            //str1 = str1.Remove(str1.Length - 2, 2) + " ]";
+
+
+
+            //gr0.DrawString(str1, new Font("Cambria Math", 12), Pens.Black.Brush, this.mid_pt.get_pt);
+
+            //// gr0.DrawString(this.is_border.ToString(), new Font("Cambria Math", 12), Pens.Black.Brush, this.mid_pt.get_pt);
+            ////string str = this.poly_id.ToString() + " start edge (cw,ccw): [" + this.start_w_edge.ToString() + ", " + this.start_ccw_edge.ToString() + "]" + Environment.NewLine +
+            ////    " end edge (cw,ccw): [" + this.end_w_edge.ToString() + ", " + this.end_ccw_edge.ToString() + "]";
+
+            ////gr0.DrawString(str, new Font("Cambria Math", 12), Pens.Black.Brush, this.mid_pt.get_pt);
+            ////foreach (poly_pts pt in offset_left)
+            ////{
+            ////    gr0.DrawEllipse(Pens.Black, (float)(pt.x - 2), (float)(pt.y - 2), 4, 4);
+            ////}
+
+
+            ////int mid_index = (int)(intermediate_pts.Count * 0.5f);
+            ////// Mid line Normal slope 
+            ////double mid_norm_slope = (intermediate_pts.ElementAt(mid_index - 1).get_pt.X - intermediate_pts.ElementAt(mid_index + 1).get_pt.X) /
+            ////    (intermediate_pts.ElementAt(mid_index + 1).get_pt.Y - intermediate_pts.ElementAt(mid_index - 1).get_pt.Y);
+
+
+            ////PointF pt_w = gfunctions.get_point_at_l_m(this.mid_pt.get_pt, mid_norm_slope, 10, 1);
+            ////PointF pt_ccw = gfunctions.get_point_at_l_m(this.mid_pt.get_pt, mid_norm_slope, 10, -1);
+
+            ////gr0.DrawEllipse(Pens.Black, (float)(pt_w.X - 2), (float)(pt_w.Y - 2), 4, 4);
+            ////gr0.DrawEllipse(Pens.Black, (float)(pt_ccw.X - 2), (float)(pt_ccw.Y - 2), 4, 4);
+
+            ////for(int i = 1;i<offset_left.Count;i++)
+            ////{
+            ////    gr0.DrawLine(Pens.Black, offset_left.ElementAt(i - 1).get_pt, offset_left.ElementAt(i).get_pt);
+            ////    //gr0.DrawEllipse(Pens.Black, (float)(pt.x - 2), (float)(pt.y - 2), 4, 4);
+            ////}
+
+
+
+            
+
+                using (GraphicsPath end_path = new GraphicsPath())
+                {
+                    end_path.AddLine(0, 0, -5, -5);
+                    end_path.AddLine(0, 0, 5, -5);
+
+                    // Make the end cap.
+                    using (CustomLineCap end_cap =
+                        new CustomLineCap(null, end_path))
+                    {
+                        // Make a pen that uses the custom caps.
+                        using (Pen the_pen = new Pen(surf_clr, 1))
+                        {
+                            the_pen.CustomEndCap = end_cap;
+                            // Draw the outter path
+                            //gr0.DrawPath(the_pen, this.surf_region);
+                            //// Draw the inner path
+                            //foreach (GraphicsPath gp in this.gp_inner_paths)
+                            //{
+                            //    gr0.DrawPath(the_pen, gp);
+                            //}
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////// Surface_frm.cs ///////////// Entire surface form (first leg creation code)///////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using varai2d_surface.Geometry_class;
+using varai2d_surface.Geometry_class.geometry_store;
+using varai2d_surface.Geometry_class.geometry_store.surface_helper_class;
+
+namespace varai2d_surface.global_static
+{
+    public partial class surface_form : Form
+    {
+        private main_form the_parent;
+        private workarea_control wkc_obj;
+        private int min_length_div = 10;
+        private double min_length_dt;
+        private int maxColorIndex;
+        private Random rand;
+        private List<KnownColor> colorList;
+        private List<int> _selected_bounds = new List<int>();
+        private List<int> _selected_surface = new List<int>();
+        //  private bool is_closed_loop_found = false;
+
+        HashSet<clipper_polylines_store> poly_lines = new HashSet<clipper_polylines_store>();
+        HashSet<surface_store> bounded_surface = new HashSet<surface_store>();
+        HashSet<surface_store> created_surface = new HashSet<surface_store>();
+
+        public surface_form(main_form m_frm, workarea_control wkc)
+        {
+            InitializeComponent();
+
+            //Setting a Stopwatch 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            //Set Random colors for surface
+            // this list will include all Colors including OS system colors
+            this.colorList = Enum.GetValues(typeof(KnownColor))
+               .Cast<KnownColor>()
+               .ToList();
+
+            rand = new Random(DateTime.Now.Ticks.GetHashCode());
+            maxColorIndex = colorList.Count();
+
+            // Initialize the Parent.
+            the_parent = m_frm;
+            the_parent.mt_pic.Refresh();
+
+            // Find all the closed boundaries
+            this.wkc_obj = wkc;
+
+            // Check whether members are added (and basic check to determine whethere there is a close loop
+            if (this.wkc_obj.geom_obj.all_end_pts.Count < 3)
+            {
+                // If end point count less than 3 then closed boundary is possible with 2 arcs or 1 bezier curve
+                if (this.wkc_obj.geom_obj.all_end_pts.Count == 2)
+                {
+                    // If end point count is 2 then 2 arc, 2 beziers or 1arc + 1 beziers or 1 line might form a closed boundary
+                    if ((this.wkc_obj.geom_obj.all_lines.Count +
+                        this.wkc_obj.geom_obj.all_arcs.Count +
+                        this.wkc_obj.geom_obj.all_beziers.Count) < 2)
+                    {
+                        // Do nothing
+                        toolStripStatusLabel_closed_curves.Text = "No closed curves found";
+                        toolStripStatusLabel_timeelapsed.Text = "";
+                        return;
+                    }
+                }
+                else if (this.wkc_obj.geom_obj.all_end_pts.Count == 1)
+                {
+                    // If end point count is 1 then only beziers might form a closed boundary
+                    if (this.wkc_obj.geom_obj.all_beziers.Count < 1)
+                    {
+                        // Do nothing
+                        return;
+                    }
+                }
+            }
+
+            // Set minimum length for (spliting objects into polylines)
+            set_min_length();
+
+            // set the poly lines
+            set_poly_lines();
+
+            bool is_simple_closed_curves;
+            do
+            {
+                // Remove polylines which are NOT part of the closed boundary
+                remove_open_poly_lines();
+                // Remove polylines which are intersecting
+                is_simple_closed_curves = remove_intersecting_poly_lines();
+
+            } while (is_simple_closed_curves == false);
+
+            // Set the ccw and cw edges of all the polygons
+            foreach (clipper_polylines_store p_line in this.poly_lines)
+            {
+                // get a subset other than the current polyline
+                HashSet<clipper_polylines_store> plines_subset = new HashSet<clipper_polylines_store>(this.poly_lines);
+                HashSet<clipper_polylines_store> temp_subset = new HashSet<clipper_polylines_store>();
+                temp_subset.Add(p_line);
+                plines_subset.ExceptWith(temp_subset);
+
+                p_line.set_polygon_edges(plines_subset);
+            }
+
+            // Set whether the boundary loop of all the polylines
+            foreach (clipper_polylines_store p_line in this.poly_lines)
+            {
+                // get a subset other than the current polyline
+                HashSet<clipper_polylines_store> plines_subset = new HashSet<clipper_polylines_store>(this.poly_lines);
+                HashSet<clipper_polylines_store> temp_subset = new HashSet<clipper_polylines_store>();
+                temp_subset.Add(p_line);
+                plines_subset.ExceptWith(temp_subset);
+
+                p_line.set_polygon_loop(plines_subset);
+            }
+
+            // Update the poly lines interim to paint
+            this.bounded_surface = find_all_surface();
+
+            //// Add to the Datagrid view closed boundaries
+            update_dataGridView_closedboundaries(this.bounded_surface);
+
+            this.wkc_obj.interim_obj.update_surface_lines(this.bounded_surface);
+
+            // Update the status
+            sw.Start();
+            toolStripStatusLabel_timeelapsed.Text = "Time elapsed: " + ((double)sw.ElapsedMilliseconds / (double)1000).ToString() + " secs";
+            toolStripStatusLabel_closed_curves.Text = "Simple closed curves: " + this.bounded_surface.Count.ToString();
+        }
+
+        private void update_dataGridView_closedboundaries(HashSet<surface_store> the_surface)
+        {
+            foreach (surface_store surf in the_surface)
+            {
+                string[] str_datGrid_row = new string[6];
+                str_datGrid_row[0] = (surf.surf_id + 1).ToString();
+                // Boundary
+                str_datGrid_row[1] = "Closed Boundary " + (surf.surf_id + 1).ToString();
+
+                // Add End point ids
+                str_datGrid_row[2] = "";
+                foreach (int ept_id in surf.closed_loop_pt_id)
+                {
+                    str_datGrid_row[2] = str_datGrid_row[2] + ept_id.ToString() + ", ";
+                }
+                if (surf.closed_loop_pt_id.Count > 0)
+                {
+                    str_datGrid_row[2] = str_datGrid_row[2].Remove(str_datGrid_row[2].Length - 2, 2);
+                }
+
+                // Add member point ids
+                str_datGrid_row[3] = "";
+                foreach (int mem_id in surf.closed_loop_bndry_id)
+                {
+                    str_datGrid_row[3] = str_datGrid_row[3] + mem_id.ToString() + ", ";
+                }
+                if (surf.closed_loop_bndry_id.Count > 0)
+                {
+                    str_datGrid_row[3] = str_datGrid_row[3].Remove(str_datGrid_row[3].Length - 2, 2);
+                }
+
+                // Add Polygon Area
+                str_datGrid_row[4] = surf.poly_area.ToString(gvariables.ln_length_pres);
+
+                // Add nested polgon area
+                str_datGrid_row[5] = "";
+                //foreach (int nest_id in surf.nested_surface_id)
+                //{
+                //    str_datGrid_row[5] = str_datGrid_row[5] + (nest_id + 1).ToString() + ", ";
+                //}
+                //if (surf.nested_surface_id.Count > 0)
+                //{
+                //    str_datGrid_row[5] = str_datGrid_row[5].Remove(str_datGrid_row[5].Length - 2, 2);
+                //}
+
+
+                dataGridView_closedboundaries.Rows.Add(str_datGrid_row);
+            }
+        }
+
+        private void set_min_length()
+        {
+            // Find member with maximum & minlength
+            this.min_length_dt = 0;
+            double min_l = Double.MaxValue;
+
+            // Get the minimum line length
+            foreach (lines_store ln in wkc_obj.geom_obj.all_lines)
+            {
+                min_l = Math.Min(min_l, ln.line_length);
+            }
+
+            // Get the minimum arc length
+            foreach (arcs_store arc in wkc_obj.geom_obj.all_arcs)
+            {
+                min_l = Math.Min(min_l, arc.arc_length);
+            }
+
+            // Get the minimum bezier length
+            foreach (beziers_store bz in wkc_obj.geom_obj.all_beziers)
+            {
+                min_l = Math.Min(min_l, bz.bezier_length);
+            }
+
+            this.min_length_dt = (min_l / (double)min_length_div);
+
+        }
+
+        private void set_poly_lines()
+        {
+            this.poly_lines.Clear();
+            List<PointF> inter_pts = new List<PointF>();
+            clipper_polylines_store temp_poly;
+
+            int iter_length;
+            double param_t;
+            double adjusted_min_length;
+
+            int i = 0;
+
+            // Convert line to poly line
+            foreach (lines_store ln in this.wkc_obj.geom_obj.all_lines)
+            {
+                // Find the number of iteration for parameter t
+                iter_length = (int)(ln.line_length / this.min_length_dt);
+                // Adjust minumum length becoz of loss of data due to double to int converstion
+                adjusted_min_length = ln.line_length / (double)iter_length;
+
+                inter_pts = new List<PointF>();
+                // iterate through parameter
+                for (i = 1; i < iter_length; i++)
+                {
+                    param_t = i * (adjusted_min_length / ln.line_length);
+                    PointF t_inter_pts = ln.get_point_at_t(param_t);
+
+                    // add to the list
+                    inter_pts.Add(t_inter_pts);
+                }
+
+                // Get the start and end points from pt strore
+                points_store t_start_pt = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_start_id));
+                points_store t_end_pt = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(ln.pt_end_id));
+
+                temp_poly = new clipper_polylines_store(ln.line_id, ln.pt_start_id, ln.pt_end_id, 1,
+                    t_start_pt.x, t_start_pt.y, inter_pts, t_end_pt.x, t_end_pt.y);
+
+                // Add to the list of poly lines
+                this.poly_lines.Add(temp_poly);
+            }
+
+
+
+            // Convert arc to poly line
+            foreach (arcs_store arc in this.wkc_obj.geom_obj.all_arcs)
+            {
+                // Find the number of iteration for parameter t
+                iter_length = (int)(arc.arc_length / this.min_length_dt);
+                // Adjust minumum length becoz of loss of data due to double to int converstion
+                adjusted_min_length = arc.arc_length / (double)iter_length;
+
+                inter_pts = new List<PointF>();
+                // iterate through parameter
+                for (i = 1; i < iter_length; i++)
+                {
+                    param_t = i * (adjusted_min_length / arc.arc_length);
+                    PointF t_inter_pts = arc.get_point_at_t(param_t);
+
+                    // add to the list
+                    inter_pts.Add(t_inter_pts);
+                }
+
+                // Get the start and end points from pt strore
+                points_store t_start_pt = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(arc.pt_chord_start_id));
+                points_store t_end_pt = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(arc.pt_chord_end_id));
+
+                temp_poly = new clipper_polylines_store(arc.arc_id, arc.pt_chord_start_id, arc.pt_chord_end_id, 2,
+                    t_start_pt.x, t_start_pt.y, inter_pts, t_end_pt.x, t_end_pt.y);
+
+                // Add to the list of poly lines
+                this.poly_lines.Add(temp_poly);
+            }
+
+            // Convert bezier to poly line
+            foreach (beziers_store bz in this.wkc_obj.geom_obj.all_beziers)
+            {
+                // Find the number of iteration for parameter t
+                iter_length = (int)(bz.bezier_length / this.min_length_dt);
+                // Adjust minumum length becoz of loss of data due to double to int converstion
+                adjusted_min_length = bz.bezier_length / (double)iter_length;
+
+                inter_pts = new List<PointF>();
+                // iterate through parameter
+                for (i = 1; i < iter_length; i++)
+                {
+                    param_t = i * (adjusted_min_length / bz.bezier_length);
+                    PointF t_inter_pts = bz.get_point_at_t(param_t);
+
+                    // add to the list
+                    inter_pts.Add(t_inter_pts);
+                }
+
+                // Get the start and end points from pt strore
+                points_store t_start_pt = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(bz.pt_bz_start_id));
+                points_store t_end_pt = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(bz.pt_bz_end_id));
+
+                temp_poly = new clipper_polylines_store(bz.bezier_id, bz.pt_bz_start_id, bz.pt_bz_end_id, 3,
+                    t_start_pt.x, t_start_pt.y, inter_pts, t_end_pt.x, t_end_pt.y);
+
+                // Only check self intersection for bezier curves
+                if (temp_poly.is_selfintersecting() == false)
+                {
+                    // Add to the list of poly lines
+                    this.poly_lines.Add(temp_poly);
+                }
+            }
+
+        }
+
+        private void remove_open_poly_lines()
+        {
+            // Poly lines which doesnot belong to any closed boundary will be removed
+            bool is_open_poly_found = false;
+            int i = 0;
+
+            HashSet<clipper_polylines_store> all_poly_lines = new HashSet<clipper_polylines_store>(this.poly_lines);
+
+            // remove the poly lines whose start and end points are the same (Its a special case only for bezier)
+            HashSet<clipper_polylines_store> bezier_loop = new HashSet<clipper_polylines_store>();
+            foreach (clipper_polylines_store pl in this.poly_lines)
+            {
+                if (pl.poly_type == 3)
+                {
+                    if (pl.poly_start_id == pl.poly_end_id)
+                    {
+                        all_poly_lines.Remove(pl);
+                        continue;
+                    }
+                }
+            }
+
+
+            do
+            {
+                is_open_poly_found = false;
+                i = 0;
+                foreach (clipper_polylines_store p_line in all_poly_lines)
+                {
+                    // get a subset other than the current polyline
+                    HashSet<clipper_polylines_store> plines_subset = new HashSet<clipper_polylines_store>(all_poly_lines);
+                    HashSet<clipper_polylines_store> temp_subset = new HashSet<clipper_polylines_store>();
+                    temp_subset.Add(p_line);
+                    plines_subset.ExceptWith(temp_subset);
+
+                    // Find all the polylines connected to the current polyline at start point
+                    //List<int> pl_id_store = new List<int>();
+                    int s_id_count = 0;
+                    foreach (clipper_polylines_store pl_startchk in plines_subset)
+                    {
+                        if (pl_startchk.is_attached_to_ptid(p_line.poly_start_id) == true)
+                        {
+                            s_id_count++;
+                        }
+                    }
+
+                    // Find all the polylines connected to the current polyline at end point 
+                    int e_id_count = 0;
+                    foreach (clipper_polylines_store pl_endchk in plines_subset)
+                    {
+                        if (pl_endchk.is_attached_to_ptid(p_line.poly_end_id) == true)
+                        {
+                            e_id_count++;
+                        }
+                    }
+
+                    if (s_id_count == 0 || e_id_count == 0)
+                    {
+                        is_open_poly_found = true;
+                        break;
+                    }
+                    i++;
+                }
+
+                // A poly line which is not connected to other poly line is found so remove
+                if (is_open_poly_found == true)
+                {
+                    this.poly_lines.Remove(all_poly_lines.ElementAt(i));
+                    all_poly_lines.Remove(all_poly_lines.ElementAt(i));
+                }
+            } while (is_open_poly_found == true);
+        }
+
+        private bool remove_intersecting_poly_lines()
+        {
+            // Only simple closed curves are recogonized (Not simple closed curves are removed)
+            // Intersecting polylines are removed
+            bool is_simple_closed_curve = true;
+
+            foreach (clipper_polylines_store p_line in this.poly_lines)
+            {
+                // get a subset other than the current polyline
+                HashSet<clipper_polylines_store> plines_subset = new HashSet<clipper_polylines_store>(this.poly_lines);
+                HashSet<clipper_polylines_store> temp_subset = new HashSet<clipper_polylines_store>();
+                temp_subset.Add(p_line);
+                plines_subset.ExceptWith(temp_subset);
+
+                // search through all the other polylines whether intersection is happening
+                foreach (clipper_polylines_store other_pl in plines_subset)
+                {
+                    if (p_line.is_intersecting(other_pl) == true)
+                    {
+                        // Remove because intersection is found
+                        is_simple_closed_curve = false;
+                        this.poly_lines.Remove(other_pl);
+                        break;
+                    }
+                }
+                if (is_simple_closed_curve == false)
+                {
+                    // remove because intersection is found
+                    this.poly_lines.Remove(p_line);
+                    break;
+                }
+            }
+            return is_simple_closed_curve;
+        }
+
+        private int get_unique_surf_id(List<clipper_surface_store> temp_surf_list)
+        {
+            // get the ids of existing surface
+            HashSet<int> t_suf_ids = new HashSet<int>();
+            foreach (surface_store sf in this.wkc_obj.geom_obj.all_surfaces)
+            {
+                t_suf_ids.Add(sf.surf_id);
+            }
+
+            // get the ids of all the current surfaces
+            foreach (clipper_surface_store sf in temp_surf_list)
+            {
+                t_suf_ids.Add(sf.surf_id);
+            }
+
+            int i = 0;
+            do
+            {
+                // continue the loop until an unique id is found (!! not very efficient)
+                if(t_suf_ids.Contains(i) == false)
+                {
+                    return i;
+                }
+                i++;
+            } while (i<1000);
+            return -1;
+        }
+
+        private HashSet<surface_store> find_all_surface()
+        {
+            List<clipper_surface_store> temp_clip_surf_list = get_clipper_surface_from_polylines();
+          
+            // Sort with ascending poly area
+            temp_clip_surf_list.Sort(new clipper_surface_Comparer());
+
+            // nest this surface inside others
+            for (int i = 0; i < (temp_clip_surf_list.Count); i++)
+            {
+                HashSet<clipper_surface_store> nested_poly_chk = new HashSet<clipper_surface_store>();
+                for (int j = i + 1; j < temp_clip_surf_list.Count; j++)
+                {
+                    // Add to the nested poly list check to check against this poly
+                    nested_poly_chk.Add(temp_clip_surf_list[j]);
+                }
+                // Complete the nesting
+                temp_clip_surf_list[i].set_nest_this_surface(nested_poly_chk);
+            }
+
+            // Reverse to make it decending
+            temp_clip_surf_list.Reverse();
+
+            // Nest polygons and add to surface list
+            HashSet<surface_store> rslt = new HashSet<surface_store>();
+            for (int i = 0; i < (temp_clip_surf_list.Count); i++)
+            {
+                // clipper_surface_store the_poly = temp_clip_surf_list[i];
+                HashSet<clipper_surface_store> nested_poly_chk = new HashSet<clipper_surface_store>();
+
+                for (int j = i + 1; j < temp_clip_surf_list.Count; j++)
+                {
+                    // Add to the nested poly list check to check against this poly
+                    nested_poly_chk.Add(temp_clip_surf_list[j]);
+                }
+
+                temp_clip_surf_list[i].set_nested_polygon(nested_poly_chk);
+                if (temp_clip_surf_list[i].poly_area > gvariables.epsilon_g)
+                {
+                    // Find all line ids associated with this surface
+                    HashSet<int> temp_mem_ids = new HashSet<int>();
+                    foreach (lines_store ln in this.wkc_obj.geom_obj.all_lines)
+                    {
+                        temp_mem_ids.Add(ln.line_id);
+                    }
+
+                    HashSet<int> tln_ids = temp_mem_ids.Intersect(temp_clip_surf_list[i].closed_loop_bndry_id).ToHashSet();
+                    // Find all arc ids associated with this surface
+                    temp_mem_ids.Clear();
+                    foreach (arcs_store arc in this.wkc_obj.geom_obj.all_arcs)
+                    {
+                        temp_mem_ids.Add(arc.arc_id);
+                    }
+
+                    HashSet<int> tarc_ids = temp_mem_ids.Intersect(temp_clip_surf_list[i].closed_loop_bndry_id).ToHashSet();
+                    // Find all bezier ids associated with this surface
+                    temp_mem_ids.Clear();
+                    foreach (beziers_store bz in this.wkc_obj.geom_obj.all_beziers)
+                    {
+                        temp_mem_ids.Add(bz.bezier_id);
+                    }
+
+                    HashSet<int> tbz_ids = temp_mem_ids.Intersect(temp_clip_surf_list[i].closed_loop_bndry_id).ToHashSet();
+
+                    surface_store temp_r = new surface_store(temp_clip_surf_list[i].surf_id,
+                                temp_clip_surf_list[i].closed_loop_bndry_id,
+                                 temp_clip_surf_list[i].closed_loop_pt_id,
+                                 tln_ids, tarc_ids, tbz_ids,
+                                 temp_clip_surf_list[i].get_polygon_pts,
+                                 Color.FromKnownColor(getRandomColor()));
+                    rslt.Add(temp_r);
+                }
+            }
+
+            // Set the nested surface
+            for (int i = 0; i < rslt.Count; i++)
+            {
+                rslt.ElementAt(i).set_nested_surface(rslt);
+            }
+
+            // Check region visibility
+            Graphics g = this.CreateGraphics();
+            List<surface_store> zero_region = rslt.ToList().FindAll(obj => obj.surf_region.IsEmpty(g));
+            foreach (surface_store z_r in zero_region)
+            {
+                rslt.Remove(z_r);
+            }
+
+            return rslt;
+        }
+
+        private List<clipper_surface_store> get_clipper_surface_from_polylines()
+        {
+            List<clipper_surface_store> temp_clip_surf_list = new List<clipper_surface_store>();
+            clipper_surface_store temp_clip_surf;
+
+
+            foreach (clipper_polylines_store p_line in this.poly_lines)
+            {
+                // Surface 1
+                bool is_add = true;
+                temp_clip_surf = new clipper_surface_store(get_unique_surf_id(temp_clip_surf_list), p_line.loop_ccw_poly_ids, p_line.loop_ccw_endpt_ids, p_line.ccw_loop_pts,false);
+                // Check whether loop is already in the list
+                foreach (clipper_surface_store surf in temp_clip_surf_list)
+                {
+                    if (surf.closed_loop_bndry_id.Except(temp_clip_surf.closed_loop_bndry_id).Count() == 0)
+                    {
+                        is_add = false;
+                        break;
+                    }
+                }
+
+                if (is_add == true)
+                {
+                    temp_clip_surf_list.Add(temp_clip_surf);
+                }
+
+                // Surface 2
+                is_add = true;
+                temp_clip_surf = new clipper_surface_store(get_unique_surf_id(temp_clip_surf_list), p_line.loop_w_poly_ids, p_line.loop_w_endpt_ids, p_line.w_loop_pts,false);
+                // Check whether loop is already in the list
+                foreach (clipper_surface_store surf in temp_clip_surf_list)
+                {
+                    if (surf.closed_loop_bndry_id.Except(temp_clip_surf.closed_loop_bndry_id).Count() == 0)
+                    {
+                        is_add = false;
+                        break;
+                    }
+                }
+
+                if (is_add == true)
+                {
+                    temp_clip_surf_list.Add(temp_clip_surf);
+                }
+            }
+
+            return temp_clip_surf_list;
+        }
+
+        private void surface_form_Load(object sender, EventArgs e)
+        {
+            // Set surface form open
+            this.Location = new Point(the_parent.Location.X + 10, the_parent.Location.Y + 150);
+            this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            this.ShowIcon = false;
+            this.Opacity = 0.9;
+            this.BringToFront();
+            this.TopMost = true;
+
+            gvariables.Is_surface_frm_open = true;
+            the_parent.mt_pic.Refresh();
+        }
+
+        private void surface_form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Set surface form close
+            wkc_obj.cancel_operation();
+            the_parent.surface_frm_closed();
+            gvariables.Is_surface_frm_open = false;
+            the_parent.mt_pic.Refresh();
+        }
+
+        private KnownColor getRandomColor()
+        {
+            // colorList[rand.Next(0, maxColorIndex)];
+            return colorList[rand.Next(48, 70)];
+        }
+
+
+        #region "Data Grid View Events"
+        private void dataGridView_closedboundaries_SelectionChanged(object sender, EventArgs e)
+        {
+            this._selected_bounds = new List<int>();
+            for (int i = 0; i < dataGridView_closedboundaries.SelectedRows.Count; i++)
+            {
+                int selected_poly_id_value;
+                int.TryParse(dataGridView_closedboundaries.SelectedRows[i].Cells[0].Value.ToString(), out selected_poly_id_value);
+                selected_poly_id_value--;
+
+                this._selected_bounds.Add(this.bounded_surface.Last(obj => obj.Equals(selected_poly_id_value)).surf_id);
+            }
+
+            // Update the boundary (Selection status)
+            for (int i = 0; i < this.bounded_surface.Count; i++)
+            {
+                if (this._selected_bounds.Contains(this.bounded_surface.ElementAt(i).surf_id))
+                {
+                    this.bounded_surface.ElementAt(i).update_selection(true);
+                }
+                else
+                {
+                    this.bounded_surface.ElementAt(i).update_selection(false);
+                }
+            }
+
+            this.wkc_obj.interim_obj.update_surface_lines(this.bounded_surface);
+            if (dataGridView_closedboundaries.SelectedRows.Count != 0)
+            {
+                dataGridView_closedboundaries.FirstDisplayedScrollingRowIndex = dataGridView_closedboundaries.SelectedRows[0].Index;
+            }
+
+            the_parent.mt_pic.Refresh();
+        }
+        #endregion
+
+        #region " Button control"
+        private void button_create_Click(object sender, EventArgs e)
+        {
+            // Create the surfaces
+            if(dataGridView_closedboundaries.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            // Remove the rows (closed boundary) which are being created from the clodeboundary datagrid view
+            foreach (DataGridViewRow row in dataGridView_closedboundaries.SelectedRows)
+            {
+                    dataGridView_closedboundaries.Rows.Remove(row);
+            }
+
+            // add these items to surface data grid view
+
+
+        }
+
+        private void button_delete_Click(object sender, EventArgs e)
+        {
+            // Delete the surfaces
+            if(dataGridView_surface.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            // add these surfaces to data gridview closed boundary
+
+            // Remove the rows (surface) which are being deleted from the surface datagrid view
+            foreach (DataGridViewRow row in dataGridView_closedboundaries.SelectedRows)
+            {
+                dataGridView_closedboundaries.Rows.Remove(row);
+            }
+        }
+
+        private void button_cancel_Click(object sender, EventArgs e)
+        {
+            // Exit the API
+            this.Close();
+        }
+        #endregion
+
+    }
+}
+
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////// Surface_frm.cs ///////////// Entire surface form (first leg creation code)///////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                
+            //for (int i = 1; i < bezier_pts.Count; i++)
+            //{
+            //    // Loop thro first line (i-1 -> i)
+            //    for (int j = 1; j < line_pts.Count; j++)
+            //    {
+            //        // Loop thro second line (j-1 -> j)
+            //        if (gfunctions.Is_lines_intersect(bezier_pts[i - 1], bezier_pts[i], line_pts[j - 1], line_pts[j]) == true)
+            //        {
+            //            // Intersection found
+            //            intersection_pt = gfunctions.intersection_point(bezier_pts[i - 1], bezier_pts[i], line_pts[j - 1], line_pts[j]);
+
+            //            // Convert intersection point to bezier parameter t
+            //            bz_int_param_t = ((i - 1) * bz_param_t) + (gfunctions.get_param_t_for_pt(bezier_pts[i - 1], bezier_pts[i], intersection_pt) * bz_param_t);
+
+            //            // Convert intersection point to line parameter t
+            //            ln_int_param_t = ((j - 1) * ln_param_t) + (gfunctions.get_param_t_for_pt(line_pts[j - 1], line_pts[j], intersection_pt) * ln_param_t);
+
+            //            is_intersecting = true;
+            //            break;
+            //        }
+            //    }
+            //    if (is_intersecting == true)
+            //    {
+            //        break;
+            //    }
+            //}
