@@ -124,7 +124,7 @@ namespace varai2d_surface.Geometry_class
 
         public void add_line(int line_id, points_store ts_pt, points_store te_pt)
         {
-            if (ts_pt.Is_point_snap(te_pt) == true)
+            if (ts_pt.check_point_snap(te_pt) == true)
             {
                 // both are same points (Exit)
                 return;
@@ -162,7 +162,7 @@ namespace varai2d_surface.Geometry_class
 
         public void add_arc(int arc_id, points_store t_chord_s_pt, points_store t_chord_e_pt, PointF cntrl_pt, PointF center_pt)
         {
-            if (t_chord_s_pt.Is_point_snap(t_chord_e_pt) == true)
+            if (t_chord_s_pt.check_point_snap(t_chord_e_pt) == true)
             {
                 // Chord points coincide (Exit)
                 return;

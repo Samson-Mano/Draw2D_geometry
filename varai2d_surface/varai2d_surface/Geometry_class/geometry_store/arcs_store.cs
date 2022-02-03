@@ -418,7 +418,7 @@ namespace varai2d_surface.Geometry_class.geometry_store
                 //And the Arcs have common arc crown point
                 points_store a_crownpt = new points_store(-200, this._arc_crown_pt.X, this._arc_crown_pt.Y);
                 points_store other_a_crownpt = new points_store(-200, other_arc.arc_crown_pt.X, other_arc.arc_crown_pt.Y);
-                if (a_crownpt.Is_point_snap(other_a_crownpt) == true)
+                if (a_crownpt.check_point_snap(other_a_crownpt) == true)
                 {
                     return true;
                 }

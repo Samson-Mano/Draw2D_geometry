@@ -16,12 +16,22 @@ namespace varai2d_surface.Geometry_class.geometry_store
         private int _nd_id;
         private double _x;
         private double _y;
+        private Predicate<points_store> _is_pt_snap;
+        private Predicate<points_store> _is_pt_h_snap;
+        private Predicate<points_store> _is_pt_v_snap;
 
         public int nd_id { get { return this._nd_id; } }
 
         public double x { get { return this._x; } }
 
         public double y { get { return this._y; } }
+
+        public Predicate<points_store> is_pt_snap { get { return this._is_pt_snap; } }
+
+        public Predicate<points_store> is_pt_h_snap { get { return this._is_pt_h_snap; } }
+
+        public Predicate<points_store> is_pt_v_snap { get { return this._is_pt_v_snap; } }
+
 
         public PointF get_point
         {
@@ -61,6 +71,11 @@ namespace varai2d_surface.Geometry_class.geometry_store
             this._nd_id = id;
             this._x = t_x;
             this._y = t_y;
+
+            // set the snap predicate
+            this._is_pt_snap = check_point_snap;
+            this._is_pt_h_snap = check_point_h_snap;
+            this._is_pt_v_snap = check_point_v_snap;
         }
 
         public void Scale_points(double scale, PointF transL)
@@ -72,6 +87,11 @@ namespace varai2d_surface.Geometry_class.geometry_store
             // Scale
             this._x = this._x * scale;
             this._y = this._y * scale;
+
+            // set the snap predicate
+            this._is_pt_snap = check_point_snap;
+            this._is_pt_h_snap = check_point_h_snap;
+            this._is_pt_v_snap = check_point_v_snap;
         }
 
 
@@ -126,7 +146,7 @@ namespace varai2d_surface.Geometry_class.geometry_store
             gr0.FillEllipse(gvariables.pen_points.Brush, gfunctions.get_ellipse_rectangle(new PointF((float)rot_x, (float)rot_y), gvariables.radius_points));
         }
 
-        public bool Is_point_snap(points_store the_pt)
+        public bool check_point_snap(points_store the_pt)
         {
             if (gvariables.Is_xysnap == false)
                 return false;
@@ -147,7 +167,7 @@ namespace varai2d_surface.Geometry_class.geometry_store
             return true;
         }
 
-        public bool Is_point_v_snap(points_store the_pt)
+        public bool check_point_v_snap(points_store the_pt)
         {
             if (gvariables.Is_hvsnap == false)
                 return false;
@@ -160,7 +180,7 @@ namespace varai2d_surface.Geometry_class.geometry_store
             return true;
         }
 
-        public bool Is_point_h_snap(points_store the_pt)
+        public bool check_point_h_snap(points_store the_pt)
         {
             if (gvariables.Is_hvsnap == false)
                 return false;

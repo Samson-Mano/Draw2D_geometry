@@ -138,8 +138,10 @@ namespace varai2d_surface.Geometry_class.modify_operation
             // Intersect member
             // Arc - Line intersection
             // Get all the single line and make a tuple
-            PointF ln_p = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(this.wkc_obj.interim_obj.selected_lines.ElementAt(0).pt_start_id)).get_point;
-            PointF ln_q = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(this.wkc_obj.interim_obj.selected_lines.ElementAt(0).pt_end_id)).get_point;
+            lines_store selected_line = this.wkc_obj.interim_obj.selected_lines.ElementAt(0);
+            arcs_store selected_arc = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0);
+            PointF ln_p = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_start_id)).get_point;
+            PointF ln_q = this.wkc_obj.geom_obj.all_end_pts.Last(obj => obj.Equals(selected_line.pt_end_id)).get_point;
             bool is_intersection = false;
 
             // Get the points of lines
@@ -153,8 +155,8 @@ namespace varai2d_surface.Geometry_class.modify_operation
                 double chrd_length, chrd_slope;
 
                 // chord segment
-                chrd_p = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t);
-                chrd_q = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t + 0.1);
+                chrd_p = selected_arc.get_point_at_t(chrd_s_t);
+                chrd_q = selected_arc.get_point_at_t(chrd_s_t + 0.1);
                 chrd_length = gfunctions.get_length(chrd_p, chrd_q);
                 chrd_slope = (chrd_q.Y - chrd_p.Y) / (chrd_q.X - chrd_p.X);
 
@@ -168,7 +170,7 @@ namespace varai2d_surface.Geometry_class.modify_operation
                 }
 
                 // tangent segment
-                tngt_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t + 0.05);
+                tngt_pt = selected_arc.get_point_at_t(chrd_s_t + 0.05);
                 tngt_pt_p = new PointF((float)(tngt_pt.X - ((chrd_q.X - chrd_p.X) * 0.5)), (float)(tngt_pt.Y - ((chrd_q.Y - chrd_p.Y) * 0.5)));
                 tngt_pt_q = new PointF((float)(tngt_pt.X + ((chrd_q.X - chrd_p.X) * 0.5)), (float)(tngt_pt.Y + ((chrd_q.Y - chrd_p.Y) * 0.5)));
 
@@ -182,8 +184,8 @@ namespace varai2d_surface.Geometry_class.modify_operation
                 }
 
                 // chord segment
-                chrd_p = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t + 0.05);
-                chrd_q = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t + 0.15);
+                chrd_p = selected_arc.get_point_at_t(chrd_s_t + 0.05);
+                chrd_q = selected_arc.get_point_at_t(chrd_s_t + 0.15);
                 chrd_length = gfunctions.get_length(chrd_p, chrd_q);
                 chrd_slope = (chrd_q.Y - chrd_p.Y) / (chrd_q.X - chrd_p.X);
 
@@ -197,7 +199,7 @@ namespace varai2d_surface.Geometry_class.modify_operation
                 }
 
                 // tangent segment
-                tngt_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t + 0.1);
+                tngt_pt = selected_arc.get_point_at_t(chrd_s_t + 0.1);
                 tngt_pt_p = new PointF((float)(tngt_pt.X - ((chrd_q.X - chrd_p.X) * 0.5)), (float)(tngt_pt.Y - ((chrd_q.Y - chrd_p.Y) * 0.5)));
                 tngt_pt_q = new PointF((float)(tngt_pt.X + ((chrd_q.X - chrd_p.X) * 0.5)), (float)(tngt_pt.Y + ((chrd_q.Y - chrd_p.Y) * 0.5)));
 
@@ -218,7 +220,7 @@ namespace varai2d_surface.Geometry_class.modify_operation
             {
                 // Ordered orientation
                 chrd_s_t = chrd_range0;
-                tngt_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t);
+                tngt_pt = selected_arc.get_point_at_t(chrd_s_t);
                 int initial_orientation = gfunctions.ordered_orientation(ln_p, ln_q, tngt_pt);
                 int current_orientation = 2;
 
@@ -227,7 +229,7 @@ namespace varai2d_surface.Geometry_class.modify_operation
                 while (current_orientation != 0 && Math.Abs(iteration_t) > (gvariables.epsilon_g / 100))
                 {
                     chrd_s_t = chrd_s_t + iteration_t;
-                    tngt_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t);
+                    tngt_pt = selected_arc.get_point_at_t(chrd_s_t);
                     current_orientation = gfunctions.ordered_orientation(ln_p, ln_q, tngt_pt);
 
                     if (current_orientation != initial_orientation)
@@ -239,7 +241,7 @@ namespace varai2d_surface.Geometry_class.modify_operation
                 }
 
                 // new chord point at parameter t
-                PointF new_chord_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(chrd_s_t);
+                PointF new_chord_pt = selected_arc.get_point_at_t(chrd_s_t);
                 double ln_t = gfunctions.get_param_t_for_pt(ln_p, ln_q, new_chord_pt);
 
                 // Intersected Line
@@ -345,14 +347,16 @@ namespace varai2d_surface.Geometry_class.modify_operation
         private void bezier_line_intersection()
         {
             // Bezier as polyline segment
-            List<PointF> bezier_pts = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).discretized_pts;
+            beziers_store selected_bezier = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0);
+            List<PointF> bezier_pts = selected_bezier.discretized_pts;
             double bz_param_t = 1.0d / (double)(bezier_pts.Count()-1);
             double bz_int_param_t = 0.0;
 
             // Line segment
-            List<PointF> line_pts = this.wkc_obj.interim_obj.selected_lines.ElementAt(0).discretized_pts;
-            line_pts.Insert(0, this.wkc_obj.interim_obj.selected_lines.ElementAt(0).get_point_at_t(0));
-            line_pts.Add(this.wkc_obj.interim_obj.selected_lines.ElementAt(0).get_point_at_t(1));
+            lines_store selected_lines = this.wkc_obj.interim_obj.selected_lines.ElementAt(0);
+            List<PointF> line_pts = selected_lines.discretized_pts;
+            line_pts.Insert(0, selected_lines.get_point_at_t(0));
+            line_pts.Add(selected_lines.get_point_at_t(1));
             double ln_param_t = 1.0d / (double)(line_pts.Count()-1);
             double ln_int_param_t = 0.0;
 
@@ -370,12 +374,12 @@ namespace varai2d_surface.Geometry_class.modify_operation
             // Convert the parameter t to bezier lines
             double f_ratio = 4.0d;
 
-            PointF bz_pt1 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).get_point_at_t(bz_int_param_t - (bz_param_t / f_ratio));
-            PointF bz_pt2 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).get_point_at_t(bz_int_param_t + (bz_param_t / f_ratio));
+            PointF bz_pt1 = selected_bezier.get_point_at_t(bz_int_param_t - (bz_param_t / f_ratio));
+            PointF bz_pt2 = selected_bezier.get_point_at_t(bz_int_param_t + (bz_param_t / f_ratio));
 
             // Convert the parameter t to lines
-            PointF ln_pt1 = this.wkc_obj.interim_obj.selected_lines.ElementAt(0).get_point_at_t(ln_int_param_t - (ln_param_t / f_ratio));
-            PointF ln_pt2 = this.wkc_obj.interim_obj.selected_lines.ElementAt(0).get_point_at_t(ln_int_param_t + (ln_param_t / f_ratio));
+            PointF ln_pt1 = selected_lines.get_point_at_t(ln_int_param_t - (ln_param_t / f_ratio));
+            PointF ln_pt2 = selected_lines.get_point_at_t(ln_int_param_t + (ln_param_t / f_ratio));
 
             // Find the intersection point
             intersection_pt = gfunctions.intersection_point(bz_pt1, bz_pt2, ln_pt1, ln_pt2);
@@ -406,14 +410,16 @@ namespace varai2d_surface.Geometry_class.modify_operation
         private void bezier_arc_intersection()
         {
             // Bezier as polyline segment
-            List<PointF> bezier_pts = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).discretized_pts;
+            beziers_store selected_bezier = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0);
+            List<PointF> bezier_pts = selected_bezier.discretized_pts;
             double bz_param_t = 1.0 / (double)(bezier_pts.Count()-1);
             double bz_int_param_t = 0.0;
 
             // Line segment
-            List<PointF> arc_pts = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).discretized_pts;
-            arc_pts.Insert(0, this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(0));
-            arc_pts.Add(this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(1));
+            arcs_store selected_arc = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0);
+            List<PointF> arc_pts = selected_arc.discretized_pts;
+            arc_pts.Insert(0, selected_arc.get_point_at_t(0));
+            arc_pts.Add(selected_arc.get_point_at_t(1));
             double arc_param_t = 1.0 / (double)(arc_pts.Count()-1);
             double arc_int_param_t = 0.0;
 
@@ -432,12 +438,12 @@ namespace varai2d_surface.Geometry_class.modify_operation
             // Convert the parameter t to bezier lines
             double f_ratio = 4.0d;
 
-            PointF bz_pt1 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).get_point_at_t(bz_int_param_t - (bz_param_t / f_ratio));
-            PointF bz_pt2 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).get_point_at_t(bz_int_param_t + (bz_param_t / f_ratio));
+            PointF bz_pt1 = selected_bezier.get_point_at_t(bz_int_param_t - (bz_param_t / f_ratio));
+            PointF bz_pt2 = selected_bezier.get_point_at_t(bz_int_param_t + (bz_param_t / f_ratio));
 
             // Convert the parameter t to lines
-            PointF ln_pt1 = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(arc_int_param_t - (arc_param_t / f_ratio));
-            PointF ln_pt2 = this.wkc_obj.interim_obj.selected_arcs.ElementAt(0).get_point_at_t(arc_int_param_t + (arc_param_t / f_ratio));
+            PointF ln_pt1 = selected_arc.get_point_at_t(arc_int_param_t - (arc_param_t / f_ratio));
+            PointF ln_pt2 = selected_arc.get_point_at_t(arc_int_param_t + (arc_param_t / f_ratio));
 
             // Find the intersection point
             intersection_pt = gfunctions.intersection_point(bz_pt1, bz_pt2, ln_pt1, ln_pt2);
@@ -467,12 +473,14 @@ namespace varai2d_surface.Geometry_class.modify_operation
         private void bezier_bezier_intersection()
         {
             // Bezier as polyline segment
-            List<PointF> bezier_pts1 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).discretized_pts;
+            beziers_store selected_bezier1 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0);
+            List<PointF> bezier_pts1 = selected_bezier1.discretized_pts;
             double bz_param_t1 = 1.0 / (double)(bezier_pts1.Count()-1);
             double bz_int_param_t1 = 0.0;
 
             // Line segment
-            List<PointF> bezier_pts2 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(1).discretized_pts;
+            beziers_store selected_bezier2 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(1);
+            List<PointF> bezier_pts2 = selected_bezier2.discretized_pts;
             double bz_param_t2 = 1.0 / (double)(bezier_pts2.Count()-1);
             double bz_int_param_t2 = 0.0;
 
@@ -490,12 +498,12 @@ namespace varai2d_surface.Geometry_class.modify_operation
             // Convert the parameter t to first bezier lines
             double f_ratio = 4.0d;
 
-            PointF bz_pt1 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).get_point_at_t(bz_int_param_t1 - (bz_param_t1 / f_ratio));
-            PointF bz_pt2 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(0).get_point_at_t(bz_int_param_t1 + (bz_param_t1 / f_ratio));
+            PointF bz_pt1 = selected_bezier1.get_point_at_t(bz_int_param_t1 - (bz_param_t1 / f_ratio));
+            PointF bz_pt2 = selected_bezier1.get_point_at_t(bz_int_param_t1 + (bz_param_t1 / f_ratio));
 
             // Convert the parameter t to second bezier lines
-            PointF ln_pt1 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(1).get_point_at_t(bz_int_param_t2 - (bz_param_t2 / f_ratio));
-            PointF ln_pt2 = this.wkc_obj.interim_obj.selected_beziers.ElementAt(1).get_point_at_t(bz_int_param_t2 + (bz_param_t2 / f_ratio));
+            PointF ln_pt1 = selected_bezier2.get_point_at_t(bz_int_param_t2 - (bz_param_t2 / f_ratio));
+            PointF ln_pt2 = selected_bezier2.get_point_at_t(bz_int_param_t2 + (bz_param_t2 / f_ratio));
 
             // Find the intersection point
             intersection_pt = gfunctions.intersection_point(bz_pt1, bz_pt2, ln_pt1, ln_pt2);
@@ -560,9 +568,10 @@ namespace varai2d_surface.Geometry_class.modify_operation
 
         private bool is_orientation_match(int arc_index, PointF int_pt)
         {
-            PointF arc_end_pt1 = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(0);
-            PointF arc_crown_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(0.5);
-            PointF arc_end_pt2 = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(1);
+            arcs_store selected_arcs = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index);
+            PointF arc_end_pt1 = selected_arcs.get_point_at_t(0);
+            PointF arc_crown_pt = selected_arcs.get_point_at_t(0.5);
+            PointF arc_end_pt2 = selected_arcs.get_point_at_t(1);
 
             int arc_orientation = gfunctions.ordered_orientation(arc_end_pt1, arc_end_pt2, arc_crown_pt);
             int newpt_orientation = gfunctions.ordered_orientation(arc_end_pt1, arc_end_pt2, int_pt);
@@ -577,20 +586,22 @@ namespace varai2d_surface.Geometry_class.modify_operation
 
         private double param_t_angle(int arc_index, PointF int_pt)
         {
-            PointF radius_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).arc_center_pt;
-            PointF arc_end_pt1 = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(0);
-            PointF arc_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(0.01);
+            arcs_store selected_arcs = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index);
+            PointF radius_pt = selected_arcs.arc_center_pt;
+            PointF arc_end_pt1 = selected_arcs.get_point_at_t(0);
+            PointF arc_pt = selected_arcs.get_point_at_t(0.01);
 
             Tuple<double, double> temp_tuple = gfunctions.get_arc_angles(arc_end_pt1, int_pt, arc_pt, radius_pt);
 
-            return (temp_tuple.Item2 / this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).arc_sweep_angle);
+            return (temp_tuple.Item2 / selected_arcs.arc_sweep_angle);
         }
 
         private void set_split_lines(int int_index, double start_param_t, double end_param_t, ref List<PointF> segment_pts)
         {
             // Intersected line
-            PointF l_pt1 = this.wkc_obj.interim_obj.selected_lines.ElementAt(int_index).get_point_at_t(start_param_t);
-            PointF l_pt2 = this.wkc_obj.interim_obj.selected_lines.ElementAt(int_index).get_point_at_t(end_param_t);
+            lines_store selected_lines = this.wkc_obj.interim_obj.selected_lines.ElementAt(int_index);
+            PointF l_pt1 = selected_lines.get_point_at_t(start_param_t);
+            PointF l_pt2 = selected_lines.get_point_at_t(end_param_t);
 
             segment_pts = new List<PointF>();
             segment_pts.Add(l_pt1);
@@ -603,12 +614,13 @@ namespace varai2d_surface.Geometry_class.modify_operation
             PointF chord_p, chord_q, crown_pt, center_pt;
 
             // set the chord point
-            chord_p = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(start_param_t);
-            chord_q = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(end_param_t);
+            arcs_store selected_arcs = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index);
+            chord_p = selected_arcs.get_point_at_t(start_param_t);
+            chord_q = selected_arcs.get_point_at_t(end_param_t);
 
             // set the radius & center point
-            crown_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).get_point_at_t(crown_param_t);
-            center_pt = this.wkc_obj.interim_obj.selected_arcs.ElementAt(arc_index).arc_center_pt;
+            crown_pt = selected_arcs.get_point_at_t(crown_param_t);
+            center_pt = selected_arcs.arc_center_pt;
 
             segment_pts = new List<PointF>();
             // Chord points
