@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
+        "projectName": "varai2d_surface",
+        "projectPath": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
+        "packagesPath": "C:\\Users\\HFXMSZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\HFXMSZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0-windows"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0-windows7.0": {
+            "targetAlias": "net7.0-windows",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0-windows7.0": {
+          "targetAlias": "net7.0-windows",
+          "dependencies": {
+            "MathNet.Numerics": {
+              "target": "Package",
+              "version": "[4.15.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

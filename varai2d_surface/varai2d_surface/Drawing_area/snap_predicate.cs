@@ -93,7 +93,7 @@ namespace varai2d_surface.Drawing_area
 
             int index;
             // Check whether the cursor pt lies on an existing point
-            index = perm_and_temp_pts.FindIndex(obj => obj.Is_point_snap(adhoc_pt));
+            index = perm_and_temp_pts.FindIndex(obj => obj.is_pt_snap(adhoc_pt));
 
             if (index != -1)
             {
@@ -109,7 +109,7 @@ namespace varai2d_surface.Drawing_area
             double y_cpt = adhoc_pt.y;
 
             // Check whether the cursor pt lies on a vertical line of any existing point
-            index = perm_and_temp_pts.FindIndex(obj => obj.Is_point_v_snap(adhoc_pt));
+            index = perm_and_temp_pts.FindIndex(obj => obj.is_pt_v_snap(adhoc_pt));
 
             if (index != -1)
             {
@@ -120,7 +120,7 @@ namespace varai2d_surface.Drawing_area
             }
 
             // Check whehter the cursor pt lies on a horizontal line of any existing point
-            index = perm_and_temp_pts.FindIndex(obj => obj.Is_point_h_snap(adhoc_pt));
+            index = perm_and_temp_pts.FindIndex(obj => obj.is_pt_h_snap(adhoc_pt));
 
             if (index != -1)
             {
@@ -157,7 +157,7 @@ namespace varai2d_surface.Drawing_area
 
             int index;
             // Check whether the cursor pt lies on an existing point
-            index = perm_and_temp_pts.FindIndex(obj => obj.Is_point_snap(adhoc_pt));
+            index = perm_and_temp_pts.FindIndex(obj => obj.is_pt_snap(adhoc_pt));
 
             if (index != -1)
             {
@@ -170,7 +170,7 @@ namespace varai2d_surface.Drawing_area
             double y_cpt = adhoc_pt.y;
 
             // Check whether the cursor pt lies on a vertical line of any existing point
-            index = perm_and_temp_pts.FindIndex(obj => obj.Is_point_v_snap(adhoc_pt));
+            index = perm_and_temp_pts.FindIndex(obj => obj.is_pt_v_snap(adhoc_pt));
 
             if (index != -1)
             {
@@ -179,7 +179,7 @@ namespace varai2d_surface.Drawing_area
             }
 
             // Check whehter the cursor pt lies on a horizontal line of any existing point
-            index = perm_and_temp_pts.FindIndex(obj => obj.Is_point_h_snap(adhoc_pt));
+            index = perm_and_temp_pts.FindIndex(obj => obj.is_pt_h_snap(adhoc_pt));
 
             if (index != -1)
             {
