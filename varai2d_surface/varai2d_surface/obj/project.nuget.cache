@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "yn/d6SC6yCjOPhtfThhQ72z2nK82SIp9JVpRJhnGy+Yv8MPlAnl0vFiiWTcVcdFpgvMgWEpotcxwXXf5wLSJxw==",
+  "dgSpecHash": "MiJQ2oGXhZA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
+  "projectFilePath": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\HFXMSZ\\.nuget\\packages\\mathnet.numerics\\4.15.0\\mathnet.numerics.4.15.0.nupkg.sha512"
+    "C:\\Users\\samin\\.nuget\\packages\\mathnet.numerics\\4.15.0\\mathnet.numerics.4.15.0.nupkg.sha512",
+    "C:\\Users\\samin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.20\\microsoft.windowsdesktop.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\samin\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.20\\microsoft.netcore.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\samin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.20\\microsoft.aspnetcore.app.ref.7.0.20.nupkg.sha512",
+    "C:\\Users\\samin\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.20\\microsoft.netcore.app.host.win-x64.7.0.20.nupkg.sha512"
   ],
   "logs": []
 }

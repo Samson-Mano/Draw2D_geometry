@@ -1,0 +1,17 @@
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\dxf_to_surface.exe.config
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\dxf_to_surface.exe
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\dxf_to_surface.pdb
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.csproj.AssemblyReference.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.main_frm.resources
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.Properties.Resources.resources
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.csproj.GenerateResource.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.csproj.CoreCompileInputs.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.exe
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_surface.pdb
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\OpenTK.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\OpenTK.GLControl.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\OpenTK.pdb
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\OpenTK.xml
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\OpenTK.GLControl.pdb
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\bin\Debug\OpenTK.GLControl.xml
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\dxf_to_surface\dxf_to_surface\obj\Debug\dxf_to_s.A61ADCE0.Up2Date

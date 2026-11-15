@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Samson Mano")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2b68e6ee2e98f29443a44e8ce6dab169f127da38")]
 [assembly: System.Reflection.AssemblyProductAttribute("varai2d_surface")]
 [assembly: System.Reflection.AssemblyTitleAttribute("varai2d_surface")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

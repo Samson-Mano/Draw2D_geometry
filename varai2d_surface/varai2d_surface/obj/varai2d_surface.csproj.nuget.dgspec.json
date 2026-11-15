@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj": {}
+    "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj": {}
   },
   "projects": {
-    "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj": {
+    "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
+        "projectUniqueName": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
         "projectName": "varai2d_surface",
-        "projectPath": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
-        "packagesPath": "C:\\Users\\HFXMSZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HFXMSZ\\OneDrive - LR\\Documents\\Programming\\Other programs\\001_Legacy_codes\\Github_cloned\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\obj\\",
+        "projectPath": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\varai2d_surface.csproj",
+        "packagesPath": "C:\\Users\\samin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\varai2d_surface\\varai2d_surface\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\HFXMSZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\samin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,7 +29,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0-windows7.0": {
+          "net7.0-windows": {
+            "framework": "net7.0-windows7.0",
             "targetAlias": "net7.0-windows",
             "projectReferences": {}
           }
@@ -34,10 +39,17 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
-        "net7.0-windows7.0": {
+        "net7.0-windows": {
+          "framework": "net7.0-windows7.0",
           "targetAlias": "net7.0-windows",
           "dependencies": {
             "MathNet.Numerics": {
@@ -56,6 +68,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
@@ -64,7 +94,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

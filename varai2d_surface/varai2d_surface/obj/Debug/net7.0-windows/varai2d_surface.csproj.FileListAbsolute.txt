@@ -20,3 +20,26 @@ C:\Users\HFXMSZ\OneDrive - LR\Documents\Programming\Other programs\001_Legacy_co
 C:\Users\HFXMSZ\OneDrive - LR\Documents\Programming\Other programs\001_Legacy_codes\Github_cloned\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.pdb
 C:\Users\HFXMSZ\OneDrive - LR\Documents\Programming\Other programs\001_Legacy_codes\Github_cloned\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.genruntimeconfig.cache
 C:\Users\HFXMSZ\OneDrive - LR\Documents\Programming\Other programs\001_Legacy_codes\Github_cloned\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\ref\varai2d_surface.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\bin\Debug\net7.0-windows\varai2d_surface.exe
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\bin\Debug\net7.0-windows\varai2d_surface.deps.json
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\bin\Debug\net7.0-windows\varai2d_surface.runtimeconfig.json
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\bin\Debug\net7.0-windows\varai2d_surface.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\bin\Debug\net7.0-windows\varai2d_surface.pdb
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\bin\Debug\net7.0-windows\MathNet.Numerics.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.csproj.AssemblyReference.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.global_static.options_form.resources
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.global_static.surface_form_api.resources
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.main_form.resources
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.Properties.Resources.resources
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.csproj.GenerateResource.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.AssemblyInfoInputs.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.AssemblyInfo.cs
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.csproj.CoreCompileInputs.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.sourcelink.json
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_.956DBDAC.Up2Date
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\refint\varai2d_surface.dll
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.pdb
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\varai2d_surface.genruntimeconfig.cache
+C:\Users\samin\OneDrive\Documents\Programming\Other programs\002_Main_program\Draw2D_geometry\varai2d_surface\varai2d_surface\obj\Debug\net7.0-windows\ref\varai2d_surface.dll
