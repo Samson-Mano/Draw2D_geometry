@@ -1,5 +1,6 @@
 ﻿// OpenTK library
 using dxf_to_surface.src.global_variables;
+using dxf_to_surface.src.model_store.drawing_objects;
 using dxf_to_surface.src.model_store.geom_objects;
 using OpenTK;
 using OpenTK.Graphics;
@@ -66,7 +67,7 @@ namespace dxf_to_surface.src.events_handler
 
 
 
-        public static void import_DXF_file(string filePath)
+        public static void import_DXF_file(string filePath, ref drawingdata_store drawingData, ref List<Vector2> nodePtsList, ref bool IsModelSet)
         {
 
             // Read the entire file into a string
@@ -224,24 +225,60 @@ namespace dxf_to_surface.src.events_handler
                 j++;
             }
 
-            // Build output string
-            var dxfInput = new StringBuilder();
+            //// Build output string
+            //var dxfInput = new StringBuilder();
 
-            foreach (var pt in allDxfPoints)
+            //foreach (var pt in allDxfPoints)
+            //{
+            //    dxfInput.AppendLine(string.Format(CultureInfo.InvariantCulture,
+            //        "node, {0}, {1:F9}, {2:F9}", pt.PtId, pt.PtX, pt.PtY));
+            //}
+
+            //int lineId = 0;
+            //foreach (var ln in allDxfLines)
+            //{
+            //    dxfInput.AppendLine(string.Format(CultureInfo.InvariantCulture,
+            //        "line, {0}, {1}, {2}", lineId, ln.StartPtId, ln.EndPtId));
+            //    lineId++;
+            //}
+
+
+            drawingData.line_data.clear_lines();
+
+            int lineID = 0;
+
+            // Add the lines to the lineMap
+            foreach(DxfLine line in allDxfLines)
             {
-                dxfInput.AppendLine(string.Format(CultureInfo.InvariantCulture,
-                    "node, {0}, {1:F9}, {2:F9}", pt.PtId, pt.PtX, pt.PtY));
+                DxfPoint startPt = allDxfPoints[line.StartPtId];
+                DxfPoint endPt = allDxfPoints[line.EndPtId];
+             
+                Vector2 StartPoint = new Vector2((float)startPt.PtX, (float)startPt.PtY);
+                Vector2 EndPoint = new Vector2((float)endPt.PtX, (float)endPt.PtY);
+
+                // Add to the NodePtsList for scaling the model
+                nodePtsList.Add(StartPoint);
+                nodePtsList.Add(EndPoint);
+
+
+                drawingData.line_data.add_line(lineID, StartPoint, EndPoint);
+                lineID++;
             }
 
-            int lineId = 0;
-            foreach (var ln in allDxfLines)
-            {
-                dxfInput.AppendLine(string.Format(CultureInfo.InvariantCulture,
-                    "line, {0}, {1}, {2}, 0", lineId, ln.StartPtId, ln.EndPtId));
-                lineId++;
-            }
+            drawingData.line_data.UpdateBuffers();
+
+
+
+
+            IsModelSet = true;
 
         }
+
+
+
+
+
+
 
 
         public static void export_FDM_surface(string filePath)

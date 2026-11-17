@@ -68,6 +68,13 @@ namespace dxf_to_surface.src.global_variables
                 return new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
             }
 
+            public static Vector3 get_LineColor()
+            {
+                Color color = Color.SkyBlue;
+
+                return new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
+            }
+
 
             public static Vector3 get_SelectionPtColor()
             {
@@ -163,7 +170,7 @@ namespace dxf_to_surface.src.global_variables
 
 
         public static float PointSize = 1.0f;
-        public static float LineWidth = 1.0f;
+        public static float LineWidth = 2.0f;
 
         public static GDIFontAtlas main_font = new GDIFontAtlas();
 
@@ -310,6 +317,22 @@ namespace dxf_to_surface.src.global_variables
         }
 
 
+        public static Vector2 FindGeometricCenter(List<Vector2> allPts)
+        {
+            // Function returns the geometric center of the nodes
+            // Initialize the sum with zero
+            Vector2 sum = Vector2.Zero;
+
+            // Sum the points
+            foreach (var pt in allPts)
+            {
+                sum += pt;
+            }
+
+            return allPts.Count > 0 ? sum / allPts.Count : Vector2.Zero;
+        }
+
+
 
         public static Tuple<Vector3, Vector3> FindMinMaxXY(List<Vector3> allPts)
         {
@@ -340,6 +363,37 @@ namespace dxf_to_surface.src.global_variables
             // Return pair of min and max values
             return Tuple.Create(minXY, maxXY);
         }
+
+
+        public static Tuple<Vector2, Vector2> FindMinMaxXY(List<Vector2> allPts)
+        {
+            if (allPts == null || allPts.Count < 1)
+            {
+                // Null input
+                return Tuple.Create(Vector2.Zero, Vector2.Zero);
+            }
+
+            // Initialize min and max values to first node in map
+            Vector2 minXY = allPts[0];
+            Vector2 maxXY = allPts[0];
+
+            // Loop through all nodes in map and update min and max values
+            foreach (var pt in allPts)
+            {
+                // Minimum
+                minXY.X = Math.Min(minXY.X, pt.X);
+                minXY.Y = Math.Min(minXY.Y, pt.Y);
+
+                // Maximum
+                maxXY.X = Math.Max(maxXY.X, pt.X);
+                maxXY.Y = Math.Max(maxXY.Y, pt.Y);
+            }
+
+            // Return pair of min and max values
+            return Tuple.Create(minXY, maxXY);
+        }
+
+
 
         public static double Clamp(double value, double min, double max)
         {

@@ -18,7 +18,8 @@ namespace dxf_to_surface.src.model_store
     public class modeldata_store
     {
 
-        //// FE Data store
+        // Main Drawing data store
+        public drawingdata_store drawing_data;
         //public fedata_store fe_data;
 
         //// Result data store
@@ -30,9 +31,9 @@ namespace dxf_to_surface.src.model_store
 
 
         // Drawing bound data
-        public Vector3 min_bounds = new Vector3(-1);
-        public Vector3 max_bounds = new Vector3(1);
-        public Vector3 geom_bounds = new Vector3(2);
+        public Vector2 min_bounds = new Vector2(-1);
+        public Vector2 max_bounds = new Vector2(1);
+        public Vector2 geom_bounds = new Vector2(2);
 
 
         public selectrectangle_store selection_rectangle; // { get; }
@@ -48,7 +49,6 @@ namespace dxf_to_surface.src.model_store
         public bool isAnnotateResultInProgress = false;
 
         public bool IsModelSet = false;
-        public bool IsResultSet = false;
 
 
         //// Animation control data
@@ -64,13 +64,12 @@ namespace dxf_to_surface.src.model_store
             graphic_events_control = new drawing_events(this);
 
             // Set a default geometry bounds
-            min_bounds = new Vector3(-1);
-            max_bounds = new Vector3(1);
-            geom_bounds = new Vector3(2);
+            min_bounds = new Vector2(-1);
+            max_bounds = new Vector2(1);
+            geom_bounds = new Vector2(2);
 
 
             IsModelSet = false;
-            IsResultSet = false;
         }
 
 
@@ -80,25 +79,28 @@ namespace dxf_to_surface.src.model_store
             selection_rectangle = new selectrectangle_store();
             selection_circle = new selectcircle_store();
 
+            drawing_data = new drawingdata_store();
             //fe_data = new fedata_store();
             //rslt_data = new rsltdata_store();
 
-
-            //contour_bar_data = new contourlevelbar_store();
-
-            IsResultSet = false;
 
         }
 
 
-        public void importFile(string filePath, int type)
+        public void importFile(string filePath)
         {
-            List<Vector3> nodePtsList = new List<Vector3>();
+            List<Vector2> nodePtsList = new List<Vector2>();
             IsModelSet = false;
-            IsResultSet = false;
 
+            drawing_data = new drawingdata_store();
             //fe_data = new fedata_store();
             //rslt_data = new rsltdata_store();
+
+
+            // Import type is DXF file DXF 2007
+            file_events.import_DXF_file(filePath, ref drawing_data, ref nodePtsList, ref IsModelSet);
+
+
 
             //if (type == 0)
             //{
@@ -113,22 +115,22 @@ namespace dxf_to_surface.src.model_store
             //}
 
 
-            //if (IsModelSet == false)
-            //    return;
+            if (IsModelSet == false)
+                return;
 
-            //// Set the mesh boundaries
-            //Vector3 geometry_center = gvariables_static.FindGeometricCenter(nodePtsList);
-            //Tuple<Vector3, Vector3> geom_extremes = gvariables_static.FindMinMaxXY(nodePtsList);
+            // Set the mesh boundaries
+            Vector2 geometry_center = gvariables_static.FindGeometricCenter(nodePtsList);
+            Tuple<Vector2, Vector2> geom_extremes = gvariables_static.FindMinMaxXY(nodePtsList);
 
 
-            //// Set the geometry bounds
-            //this.min_bounds = geom_extremes.Item1; // Minimum bound
-            //this.max_bounds = geom_extremes.Item2; // Maximum bound
+            // Set the geometry bounds
+            this.min_bounds = geom_extremes.Item1; // Minimum bound
+            this.max_bounds = geom_extremes.Item2; // Maximum bound
 
-            //this.geom_bounds = max_bounds - min_bounds;
+            this.geom_bounds = max_bounds - min_bounds;
 
-            //// update the global static value
-            //gvariables_static.geom_size = this.geom_bounds.Length;
+            // update the global static value
+            gvariables_static.geom_size = this.geom_bounds.Length;
 
 
             //fe_data.set_meshdrawing_data();
@@ -158,8 +160,11 @@ namespace dxf_to_surface.src.model_store
             if (!IsModelSet)
                 return;
 
-            bool hasResults = IsResultSet && gvariables_static.is_paint_result();
-            bool showTransparentMesh = gvariables_static.is_show_transparent_model_mesh;
+
+            drawing_data.paint_drawing_data();
+
+            //bool hasResults = IsResultSet && gvariables_static.is_paint_result();
+            //bool showTransparentMesh = gvariables_static.is_show_transparent_model_mesh;
 
             //// 1. Paint the model mesh FIRST (as background/underlay)
             //// Always paint model if we want transparent mesh OR if no results are shown
@@ -214,6 +219,8 @@ namespace dxf_to_surface.src.model_store
 
             if (!IsModelSet)
                 return;
+
+            drawing_data.update_openTK_uniforms(graphic_events_control);
 
             //fe_data.update_openTK_uniforms(graphic_events_control);
             //rslt_data.update_openTK_uniforms(graphic_events_control);

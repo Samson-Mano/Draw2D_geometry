@@ -63,6 +63,10 @@
     <Compile Include="src\events_handler\drawing_events.cs" />
     <Compile Include="src\events_handler\file_events.cs" />
     <Compile Include="src\global_variables\gvariables_static.cs" />
+    <Compile Include="src\model_store\drawing_objects\arclist_store.cs" />
+    <Compile Include="src\model_store\drawing_objects\circlelist_store.cs" />
+    <Compile Include="src\model_store\drawing_objects\drawingdata_store.cs" />
+    <Compile Include="src\model_store\drawing_objects\ellipselist_store.cs" />
     <Compile Include="src\model_store\drawing_objects\linelist_store.cs" />
     <Compile Include="src\model_store\geom_objects\axisdata_store.cs" />
     <Compile Include="src\model_store\geom_objects\label_list_store.cs" />

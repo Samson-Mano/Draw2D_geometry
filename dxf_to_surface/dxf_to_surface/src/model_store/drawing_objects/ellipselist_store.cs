@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using dxf_to_surface.src.events_handler;
+using dxf_to_surface.src.global_variables;
+using dxf_to_surface.src.model_store.geom_objects;
+using dxf_to_surface.src.opentk_control.opentk_buffer;
+using dxf_to_surface.src.opentk_control.shader_compiler;
+// OpenTK library
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL4;
+
+namespace dxf_to_surface.src.model_store.drawing_objects
+{
+    public class ellipse_store
+    {
+        public int ellipse_id;
+        public Vector2 ellipseCenterPt;
+        public double ellipseMajorAxis;
+        public double ellipseMinorAxis;
+        public double ellipseRotationAngle;
+
+        public double startParameter;
+        public double endParameter;
+
+    }
+
+
+
+    public class ellipselist_store
+    {
+
+
+    }
+}

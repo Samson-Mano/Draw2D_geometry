@@ -299,6 +299,35 @@ namespace dxf_to_surface
 
         private void importDXFFromLibreCADToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "Import Model File",
+                Filter = "DXF Files (*.dxf)|*.dxf|All Files (*.*)|*.*",
+                // InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+
+                try
+                {
+
+                    modeldata.importFile(filePath);
+
+                    // Do something with the file content, e.g., parse the model
+                    // MessageBox.Show("Model file loaded successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error reading binary file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            glControl_main_panel_SizeChanged(sender, e);
+
+            glControl_main_panel.Refresh();
+            glControl_main_panel.Invalidate();
 
         }
 
