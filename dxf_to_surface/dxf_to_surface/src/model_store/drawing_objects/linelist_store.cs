@@ -33,9 +33,6 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public Dictionary<int, line_store> lineMap { get; } = new Dictionary<int, line_store>();
         private int lineCount = 0;
 
-        private label_list_store line_length_label;
-
-
         // Rendering resources
         private VertexArray _lineVAO;
         private VertexBuffer _lineVBO;

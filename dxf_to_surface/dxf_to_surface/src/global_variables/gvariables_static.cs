@@ -70,7 +70,30 @@ namespace dxf_to_surface.src.global_variables
 
             public static Vector3 get_LineColor()
             {
-                Color color = Color.SkyBlue;
+                Color color = Color.BlueViolet;
+
+                return new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
+            }
+
+            public static Vector3 get_CircleColor()
+            {
+                Color color = Color.DarkOrange;
+
+                return new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
+            }
+
+
+            public static Vector3 get_EllipseColor()
+            {
+                Color color = Color.DarkGreen;
+
+                return new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
+            }
+
+
+            public static Vector3 get_SplineColor()
+            {
+                Color color = Color.DarkCyan;
 
                 return new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
             }
@@ -170,7 +193,7 @@ namespace dxf_to_surface.src.global_variables
 
 
         public static float PointSize = 1.0f;
-        public static float LineWidth = 2.0f;
+        public static float LineWidth = 3.0f;
 
         public static GDIFontAtlas main_font = new GDIFontAtlas();
 

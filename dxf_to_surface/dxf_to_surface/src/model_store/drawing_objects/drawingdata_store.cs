@@ -12,16 +12,27 @@ namespace dxf_to_surface.src.model_store.drawing_objects
     {
 
         public linelist_store line_data; // { get; }
+        public circlelist_store circle_data; // { get; }
+        public ellipselist_store ellipse_data; // { get; }
 
+        public splinelist_store spline_data; // { get; }
 
         public drawingdata_store()
         {
             line_data = new linelist_store();
+            circle_data = new circlelist_store();
+            ellipse_data = new ellipselist_store();
+            spline_data = new splinelist_store();
+
         }
 
         public void paint_drawing_data()
         {
             line_data.paint_lines();
+            circle_data.paint_circles();
+            ellipse_data.paint_ellipses();
+            spline_data.paint_splines();
+
         }
 
 
@@ -29,6 +40,9 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         {
             // Update the drawing object uniforms
             line_data.update_openTK_uniforms(graphic_events_control);
+            circle_data.update_openTK_uniforms(graphic_events_control);
+            ellipse_data.update_openTK_uniforms(graphic_events_control);
+            spline_data.update_openTK_uniforms(graphic_events_control);
 
         }
 
