@@ -225,6 +225,17 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         }
 
 
+        public void getModelScalingPoints(ref List<Vector2> scalingPoints)
+        {
+            foreach (var line in lineMap.Values)
+            {
+                scalingPoints.Add(line.lineStartPt);
+                scalingPoints.Add(line.lineEndPt);
+            }
+        }
+
+
+
 
     }
 }

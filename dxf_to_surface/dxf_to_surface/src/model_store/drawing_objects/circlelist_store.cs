@@ -326,5 +326,23 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         }
 
 
+
+        public void getModelScalingPoints(ref List<Vector2> scalingPoints)
+        {
+            List<float> circle_vertices = new List<float>();
+
+            foreach (var circle in circleMap.Values)
+            {
+                get_circle_vertex_buffer(circle, ref circle_vertices);
+            }
+
+            for (int i = 0; i < circle_vertices.Count; i += 2)
+            {
+                scalingPoints.Add(new Vector2(circle_vertices[i], circle_vertices[i + 1]));
+            }
+
+        }
+
+
     }
 }

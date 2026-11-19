@@ -522,15 +522,11 @@ namespace dxf_to_surface.src.events_handler
                 Vector2 StartPoint = new Vector2((float)startPt.PtX, (float)startPt.PtY);
                 Vector2 EndPoint = new Vector2((float)endPt.PtX, (float)endPt.PtY);
 
-                // Add to the NodePtsList for scaling the model
-                nodePtsList.Add(StartPoint);
-                nodePtsList.Add(EndPoint);
-
-
                 drawingData.line_data.add_line(lineID, StartPoint, EndPoint);
                 lineID++;
             }
 
+            drawingData.line_data.getModelScalingPoints(ref nodePtsList);
             drawingData.line_data.UpdateBuffers();
 
             //___________________________________________________________________________________
@@ -545,26 +541,13 @@ namespace dxf_to_surface.src.events_handler
                 DxfPoint centerPt = allDxfPoints[circle.CenterPtId];
                 Vector2 CenterPoint = new Vector2((float)centerPt.PtX, (float)centerPt.PtY);
 
-                // Add to the NodePtsList for scaling the model
-                nodePtsList.Add(CenterPoint);
-                // Add four end point on the circumference for scaling
-                nodePtsList.Add(new Vector2((float)centerPt.PtX + (float)circle.Radius, (float)centerPt.PtY)); 
-                nodePtsList.Add(new Vector2((float)centerPt.PtX - (float)circle.Radius, (float)centerPt.PtY)); 
-                nodePtsList.Add(new Vector2((float)centerPt.PtX, (float)centerPt.PtY + (float)circle.Radius)); 
-                nodePtsList.Add(new Vector2((float)centerPt.PtX, (float)centerPt.PtY - (float)circle.Radius)); 
-
-                if (circle.type == 0) // Circle
-                {
-                    // add_circle(int circleID, Vector2 centerPt, double radius, double startAngle, double endAngle, int type)
-                    drawingData.circle_data.add_circle(circleID, CenterPoint, circle.Radius, circle.startAngle, circle.endAngle, circle.type);
-                }
-                else if (circle.type == 1) // Arc
-                {
-                    drawingData.circle_data.add_circle(circleID, CenterPoint,circle.Radius,circle.startAngle, circle.endAngle, circle.type);
-                }
+                // add_circle(int circleID, Vector2 centerPt, double radius, double startAngle, double endAngle, int type)
+                drawingData.circle_data.add_circle(circleID, CenterPoint, circle.Radius, circle.startAngle, circle.endAngle, circle.type);
+                
                 circleID++;
             }
 
+            drawingData.circle_data.getModelScalingPoints(ref nodePtsList);
             drawingData.circle_data.UpdateBuffers();
 
             //___________________________________________________________________________________
@@ -579,22 +562,14 @@ namespace dxf_to_surface.src.events_handler
                 DxfPoint centerPt = allDxfPoints[ellipse.CenterPtId];
                 Vector2 CenterPoint = new Vector2((float)centerPt.PtX, (float)centerPt.PtY);
 
-                // Add to the NodePtsList for scaling the model
-                nodePtsList.Add(CenterPoint);
-                // Add four end point on the circumference for scaling
-                nodePtsList.Add(new Vector2((float)centerPt.PtX + (float)ellipse.ellipseMajorAxis, (float)centerPt.PtY));
-                nodePtsList.Add(new Vector2((float)centerPt.PtX - (float)ellipse.ellipseMajorAxis, (float)centerPt.PtY));
-                nodePtsList.Add(new Vector2((float)centerPt.PtX, (float)centerPt.PtY + (float)ellipse.ellipseMajorAxis));
-                nodePtsList.Add(new Vector2((float)centerPt.PtX, (float)centerPt.PtY - (float)ellipse.ellipseMajorAxis));
-
-                drawingData.ellipse_data.add_ellipse(ellipseID, CenterPoint, ellipse.ellipseMajorAxis, 
+                drawingData.ellipse_data.add_ellipse(ellipseID, CenterPoint, ellipse.ellipseMajorAxis,
                     ellipse.ellipseMinorAxis, ellipse.ellipseRotationAngle, ellipse.type,
                     ellipse.startParameter, ellipse.endParameter);
 
                 ellipseID++;
             }
 
-
+            drawingData.ellipse_data.getModelScalingPoints(ref nodePtsList);
             drawingData.ellipse_data.UpdateBuffers();
 
             //___________________________________________________________________________________
@@ -606,11 +581,29 @@ namespace dxf_to_surface.src.events_handler
             // Add the splines to the splineMap
             foreach (DxfSpline spline in allDxfSplines)
             {
+                List<Vector2> controlPoints = new List<Vector2>();
 
+                foreach (int ptId in spline.controlPointIds)
+                {
+                    DxfPoint pt = allDxfPoints[ptId];
+                    controlPoints.Add(new Vector2((float)pt.PtX, (float)pt.PtY));
+                }
+
+                List<Vector2> fitPoints = new List<Vector2>();
+
+                foreach (int ptId in spline.fitPointIds)
+                {
+                    DxfPoint pt = allDxfPoints[ptId];
+                    fitPoints.Add(new Vector2((float)pt.PtX, (float)pt.PtY));
+                }
+
+                drawingData.spline_data.add_spline(splineID, spline.degree, controlPoints, spline.weights, spline.knotVector, spline.isClosed,
+                    spline.isPeriodic, spline.isRational, fitPoints);
 
                 splineID++;
             }
 
+            drawingData.spline_data.getModelScalingPoints(ref nodePtsList);
             drawingData.spline_data.UpdateBuffers();
 
 

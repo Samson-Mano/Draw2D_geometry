@@ -53,7 +53,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         private Shader _ellipseShader;
 
 
-        
+
         public ellipselist_store()
         {
             ellipseMap = new Dictionary<int, ellipse_store>();
@@ -65,7 +65,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         }
 
 
-        public void add_ellipse(int t_ellipse_id, Vector2 t_ellipseCenterPt, double t_ellipseMajorAxis, double t_ellipseMinorAxis, 
+        public void add_ellipse(int t_ellipse_id, Vector2 t_ellipseCenterPt, double t_ellipseMajorAxis, double t_ellipseMinorAxis,
             double t_ellipseRotationAngle, int t_type, double t_startParameter = 0.0, double t_endParameter = 0.0)
         {
             Vector2 startPt = new Vector2(0);
@@ -87,7 +87,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
             }
-            else if(t_type == 1)
+            else if (t_type == 1)
             {
                 // Create the rotation matrix for the ellipse
                 double cosTheta = Math.Cos(t_ellipseRotationAngle);
@@ -266,10 +266,10 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
                     double angle = (2.0 * Math.PI * i) / (double)ELLIPSE_VERTEX_COUNT;
 
-                    float x = (float)(ellipse.ellipseCenterPt.X + 
+                    float x = (float)(ellipse.ellipseCenterPt.X +
                         ellipse.ellipseMajorAxis * Math.Cos(angle) * cosTheta - ellipse.ellipseMinorAxis * Math.Sin(angle) * sinTheta);
-                    
-                    float y = (float)(ellipse.ellipseCenterPt.Y + 
+
+                    float y = (float)(ellipse.ellipseCenterPt.Y +
                         ellipse.ellipseMajorAxis * Math.Cos(angle) * sinTheta + ellipse.ellipseMinorAxis * Math.Sin(angle) * cosTheta);
 
 
@@ -375,6 +375,20 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         }
 
 
+        public void getModelScalingPoints(ref List<Vector2> scalingPoints)
+        {
+            List<float> ellipse_vertices = new List<float>();
+
+            foreach (var ellipse in ellipseMap.Values)
+            {
+                get_ellipse_vertex_buffer(ellipse, ref ellipse_vertices);
+            }
+
+            for (int i = 0; i < ellipse_vertices.Count; i += 2)
+            {
+                scalingPoints.Add(new Vector2(ellipse_vertices[i], ellipse_vertices[i + 1]));
+            }
+        }
 
 
 

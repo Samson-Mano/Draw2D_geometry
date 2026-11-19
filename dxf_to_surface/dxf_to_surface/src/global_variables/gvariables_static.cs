@@ -8,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace dxf_to_surface.src.global_variables
 {
@@ -630,53 +631,64 @@ namespace dxf_to_surface.src.global_variables
             }
         }
 
-
-        // Helper method to check if two line segments intersect
-        private static bool DoLinesIntersect(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        /// <summary>
+        /// Returns true iff segments (p1,p2) and (p3,p4) cross transversally
+        /// at a point strictly inside both segments' spans (within eps slack).
+        /// Collinear overlaps return false — use TryGetCollinearOverlap for those.
+        /// </summary>
+        public static bool DoLinesIntersect(
+            Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double eps = 1e-9)
         {
-            // Calculate the direction vectors
-            Vector2 d1 = p2 - p1;
-            Vector2 d2 = p4 - p3;
+            double d1x = p2.X - p1.X, d1y = p2.Y - p1.Y;
+            double d2x = p4.X - p3.X, d2y = p4.Y - p3.Y;
 
-            // Calculate the cross products
-            float cross1 = d1.X * d2.Y - d1.Y * d2.X;
-            float cross2 = (p3 - p1).X * d2.Y - (p3 - p1).Y * d2.X;
+            double len1sq = d1x * d1x + d1y * d1y;
+            double len2sq = d2x * d2x + d2y * d2y;
+            if (len1sq < eps * eps || len2sq < eps * eps)
+                return false;                       // degenerate segment
 
-            if (Math.Abs(cross1) < float.Epsilon)
-            {
-                // Lines are parallel - check if they're collinear and overlapping
-                if (Math.Abs(cross2) < float.Epsilon)
-                {
-                    // Check if the segments overlap
-                    float t1 = 0, t2 = 0;
-                    if (Math.Abs(d1.X) > float.Epsilon)
-                    {
-                        t1 = (p3.X - p1.X) / d1.X;
-                        t2 = (p4.X - p1.X) / d1.X;
-                    }
-                    else if (Math.Abs(d1.Y) > float.Epsilon)
-                    {
-                        t1 = (p3.Y - p1.Y) / d1.Y;
-                        t2 = (p4.Y - p1.Y) / d1.Y;
-                    }
-                    else
-                    {
-                        return false; // Degenerate line
-                    }
+            double cross = d1x * d2y - d1y * d2x;   // d1 x d2
+            double scale = Math.Sqrt(len1sq * len2sq);
+            if (Math.Abs(cross) < eps * Math.Max(scale, 1.0))
+                return false;                       // parallel (incl. collinear)
 
-                    // Check if segments overlap
-                    float minT = Math.Min(t1, t2);
-                    float maxT = Math.Max(t1, t2);
-                    return minT <= 1 && maxT >= 0;
-                }
-                return false;
-            }
+            double rx = p3.X - p1.X, ry = p3.Y - p1.Y;
+            double t = (rx * d2y - ry * d2x) / cross;
+            double s = (rx * d1y - ry * d1x) / cross;
 
-            // Check if the intersection point is within both segments
-            float t = cross2 / cross1;
-            float u = ((p3 - p1).X * d1.Y - (p3 - p1).Y * d1.X) / cross1;
+            return t >= -eps && t <= 1.0 + eps
+                && s >= -eps && s <= 1.0 + eps;
+        }
 
-            return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+        /// <summary>
+        /// Computes the transversal intersection point of two segments.
+        /// Assumes DoLinesIntersect returned true for the same inputs
+        /// (same eps). Returns (0,0) if the inputs are not a proper
+        /// intersection — callers MUST gate on DoLinesIntersect.
+        /// </summary>
+        public static Vector2 GetLineSegmentIntersectionPoint(
+            Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double eps = 1e-9)
+        {
+            double d1x = p2.X - p1.X, d1y = p2.Y - p1.Y;
+            double d2x = p4.X - p3.X, d2y = p4.Y - p3.Y;
+
+            double cross = d1x * d2y - d1y * d2x;
+            double scale = Math.Sqrt((d1x * d1x + d1y * d1y) * (d2x * d2x + d2y * d2y));
+            if (Math.Abs(cross) < eps * Math.Max(scale, 1.0))
+                return new Vector2(0, 0);           // parallel
+
+            double rx = p3.X - p1.X, ry = p3.Y - p1.Y;
+            double t = (rx * d2y - ry * d2x) / cross;
+
+            // Snap to the endpoints when the intersection is within eps of a vertex.
+            // This prevents 1e-12-length stubs that become degree-1 nodes and get
+            // pruned, disconnecting the graph.
+            if (t < eps) t = 0.0;
+            else if (t > 1 - eps) t = 1.0;
+
+            return new Vector2(
+                (float)(p1.X + t * d1x),
+                (float)(p1.Y + t * d1y));
         }
 
 
