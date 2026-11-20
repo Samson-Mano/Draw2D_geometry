@@ -69,6 +69,7 @@
     <Compile Include="src\model_store\drawing_objects\circlelist_store.cs" />
     <Compile Include="src\model_store\drawing_objects\drawingdata_store.cs" />
     <Compile Include="src\model_store\drawing_objects\ellipselist_store.cs" />
+    <Compile Include="src\model_store\drawing_objects\IntersectionSplitting.cs" />
     <Compile Include="src\model_store\drawing_objects\linelist_store.cs" />
     <Compile Include="src\model_store\drawing_objects\splinelist_store.cs" />
     <Compile Include="src\model_store\geom_objects\axisdata_store.cs" />
