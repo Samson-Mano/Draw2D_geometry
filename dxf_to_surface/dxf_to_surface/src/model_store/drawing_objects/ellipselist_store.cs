@@ -32,6 +32,99 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public Vector2 arcStartPt;
         public Vector2 arcEndPt;
 
+
+        // Arc-length table (populated by BuildArcLengthTable, used by the half-edge).
+        public double[] ArcLengthTableParam;
+        public double[] ArcLengthTableS;
+
+
+        public Vector2 GetEllipsePoint(double u)
+        {
+            // Calculate the point on the ellipse using the parametric equations
+            double cosT = Math.Cos(ellipseRotationAngle);
+            double sinT = Math.Sin(ellipseRotationAngle);
+            double x = ellipseCenterPt.X + ellipseMajorAxis * Math.Cos(u) * cosT
+                                         - ellipseMinorAxis * Math.Sin(u) * sinT;
+            double y = ellipseCenterPt.Y + ellipseMajorAxis * Math.Cos(u) * sinT
+                                         + ellipseMinorAxis * Math.Sin(u) * cosT;
+            return new Vector2((float)x, (float)y);
+        }
+
+        public Vector2 GetEllipseDerivative(double u)
+        {
+            // Calculate the derivative of the ellipse at parameter u
+            double cosT = Math.Cos(ellipseRotationAngle);
+            double sinT = Math.Sin(ellipseRotationAngle);
+            double dx = -ellipseMajorAxis * Math.Sin(u) * cosT - ellipseMinorAxis * Math.Cos(u) * sinT;
+            double dy = -ellipseMajorAxis * Math.Sin(u) * sinT + ellipseMinorAxis * Math.Cos(u) * cosT;
+
+            return new Vector2((float)dx, (float)dy);
+        }
+
+        public Vector2 GetEllipseSecondDerivative(double u)
+        {
+            // Calculate the second derivative of the ellipse at parameter u
+            double cosT = Math.Cos(ellipseRotationAngle);
+            double sinT = Math.Sin(ellipseRotationAngle);
+            double ddx = -ellipseMajorAxis * Math.Cos(u) * cosT + ellipseMinorAxis * Math.Sin(u) * sinT;
+            double ddy = -ellipseMajorAxis * Math.Cos(u) * sinT - ellipseMinorAxis * Math.Sin(u) * cosT;
+
+            return new Vector2((float)ddx, (float)ddy);
+        }
+
+
+        // --- Arc length ---
+
+        public (double[] Params, double[] S) BuildArcLengthTable(int samples = 32)
+        {
+            double startU = ((startParameter % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+            double sweep = CCWSweep(startU, endParameter);
+            if (sweep <= 1e-12) { ArcLengthTableParam = new[] { startU }; ArcLengthTableS = new[] { 0.0 }; return (ArcLengthTableParam, ArcLengthTableS); }
+
+            var ps = new double[samples + 1];
+            var ss = new double[samples + 1];
+            ps[0] = startU; ss[0] = 0.0;
+            double du = sweep / samples;
+            for (int i = 1; i <= samples; i++)
+            {
+                double u = startU + i * du;
+                ps[i] = u;
+                ss[i] = ss[i - 1] + IntegrateSpeed(startU + (i - 1) * du, u);
+            }
+            ArcLengthTableParam = ps;
+            ArcLengthTableS = ss;
+            return (ps, ss);
+        }
+
+        public double GetArcLength()   // total length of this sub-arc
+        {
+            if (ArcLengthTableS == null || ArcLengthTableS.Length == 0) BuildArcLengthTable();
+            return ArcLengthTableS[ArcLengthTableS.Length - 1];
+        }
+
+        private double IntegrateSpeed(double u0, double u1)
+        {
+            double[] x = { -0.861136311594053, -0.339981043584856, 0.339981043584856, 0.861136311594053 };
+            double[] w = { 0.347854845137454, 0.652145154862546, 0.652145154862546, 0.347854845137454 };
+            double half = 0.5 * (u1 - u0), mid = 0.5 * (u1 + u0);
+            double sum = 0.0;
+            for (int k = 0; k < 4; k++)
+            {
+                double u = mid + half * x[k];
+                double sp = Math.Sqrt(ellipseMajorAxis * ellipseMajorAxis * Math.Sin(u) * Math.Sin(u)
+                                    + ellipseMinorAxis * ellipseMinorAxis * Math.Cos(u) * Math.Cos(u));
+                sum += w[k] * sp;
+            }
+            return half * sum;
+        }
+
+        private static double CCWSweep(double from, double to)
+        {
+            double twoPi = 2.0 * Math.PI;
+            double d = ((to % twoPi) + twoPi) % twoPi - ((from % twoPi) + twoPi) % twoPi;
+            return d < 0 ? d + twoPi : d;
+        }
+
     }
 
 

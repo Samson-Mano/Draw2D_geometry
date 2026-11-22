@@ -21,8 +21,8 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public int circle_id;
         public Vector2 circleCenterPt;
         public double circleRadius;
-        public double startAngle;
-        public double endAngle;
+        public double startAngle;// radians, CCW from +X, [0, 2π)
+        public double endAngle; // radians, CCW from +X, [0, 2π)
         public int type; // 0 for circle, 1 for arc
 
         // When type is 1 (arc), we can use the following properties to store the start and end points of the arc
@@ -30,6 +30,55 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         // public Vector2 arcMidPt; // Optional: midpoint of the arc, can be calculated if needed
         public Vector2 arcEndPt;
 
+        // P(θ), θ in radians
+        public Vector2 GetCirclePoint(double angle)
+        {
+            double x = circleCenterPt.X + circleRadius * Math.Cos(angle);
+            double y = circleCenterPt.Y + circleRadius * Math.Sin(angle);
+            return new Vector2((float)x, (float)y);
+        }
+
+        // dP/dθ, unnormalized. Not the unit tangent.
+        public Vector2 GetCircleDerivative(double angle)
+        {
+            double dx = -circleRadius * Math.Sin(angle);
+            double dy = circleRadius * Math.Cos(angle);
+            return new Vector2((float)dx, (float)dy);
+        }
+
+        // d²P/dθ², unnormalized.
+        public Vector2 GetCircleSecondDerivative(double angle)
+        {
+            double ddx = -circleRadius * Math.Cos(angle);
+            double ddy = -circleRadius * Math.Sin(angle);
+            return new Vector2((float)ddx, (float)ddy);
+        }
+
+        // Arc length of the sweep [startAngle, endAngle] in CCW direction.
+        // For a full circle (type == 0), this is 2πr.
+        public double GetCircleArcLength(double fromAngle, double toAngle)
+        {
+            double sweep = CCWSweep(fromAngle, toAngle);
+            return circleRadius * sweep;
+        }
+
+        // Keep this for code that wants the unit tangent directly; it's just
+        // GetCircleDerivative normalized. Useful in tests.
+        public Vector2 GetCircleTangent(double angle)
+        {
+            Vector2 d = GetCircleDerivative(angle);
+            double len = Math.Sqrt(d.X * d.X + d.Y * d.Y);
+            return len < 1e-12 ? new Vector2(0, 0) : new Vector2((float)(d.X / len), (float)(d.Y / len));
+        }
+
+
+        public static double CCWSweep(double from, double to)
+        {
+            double twoPi = 2.0 * Math.PI;
+            double d = ((to % twoPi) + twoPi) % twoPi - ((from % twoPi) + twoPi) % twoPi;
+            if (d < 0) d += twoPi;
+            return d;
+        }
     }
 
 

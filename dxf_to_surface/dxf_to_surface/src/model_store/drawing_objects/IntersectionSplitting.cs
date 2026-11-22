@@ -12,6 +12,27 @@ namespace dxf_to_surface.src.model_store.drawing_objects
     {
 
 
+        public static void Intersection_and_Splitting(ref linelist_store line_data,
+            ref circlelist_store circle_data, ref ellipselist_store ellipse_data)
+        {
+            // Perform intersection and splitting for lines, circles, and ellipses
+            // Hierarchy 1: Line-Line, Line-Circle, Line-Ellipse
+            Line_Line_Intersection_and_Splitting(ref line_data);
+            Line_Circle_Intersection_and_Splitting(ref line_data, ref circle_data);
+            Line_Ellipse_Intersection_and_Splitting(ref line_data, ref ellipse_data);
+
+            // Hierarchy 2: Circle-Circle, Circle-Ellipse
+            Circle_Circle_Intersection_and_Splitting(ref circle_data);
+            Circle_Ellipse_Intersection_and_Splitting(ref circle_data, ref ellipse_data);
+
+            // Hierarchy 3: Ellipse-Ellipse
+            Ellipse_Ellipse_Intersection_and_Splitting(ref ellipse_data);
+
+        }
+
+
+
+
         public static void Line_Line_Intersection_and_Splitting(ref linelist_store line_data)
         {
             // Perform line-line intersection and splitting
@@ -38,7 +59,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     // Gaurd to prevent line self intersection
                     if (line1.line_id != line2.line_id)
                     {
-                        if (gvariables_static.DoLinesIntersect(line1.lineStartPt, line1.lineEndPt, line2.lineStartPt, line2.lineEndPt))
+                        if (DoLinesIntersect(line1.lineStartPt, line1.lineEndPt, line2.lineStartPt, line2.lineEndPt))
                         {
                             // Store the intersection information
                             line_intersections[line1.line_id].Add(line2.line_id);
@@ -67,7 +88,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                 {
                     line_store intersectingLine = line_data.lineMap[intersectingLineId];
 
-                    Vector2 intersectionPoint = gvariables_static.GetLineSegmentIntersectionPoint(originalLine.lineStartPt,
+                    Vector2 intersectionPoint = GetLineSegmentIntersectionPoint(originalLine.lineStartPt,
                         originalLine.lineEndPt, intersectingLine.lineStartPt, intersectingLine.lineEndPt);
 
                     // Add the intersection point to the original line's intersection points
@@ -163,7 +184,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
                     if (circle.type == 0)
                     {
-                        if (DoLineSegmentIntersectCircle(line1.lineStartPt, line1.lineEndPt, 
+                        if (DoLineSegmentIntersectCircle(line1.lineStartPt, line1.lineEndPt,
                             circle.circleCenterPt, (float)circle.circleRadius))
                         {
                             // Store the intersection information
@@ -174,7 +195,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     }
                     else if (circle.type == 1)
                     {
-                        if (DoLineSegmentIntersectCircularArc(line1.lineStartPt, line1.lineEndPt, 
+                        if (DoLineSegmentIntersectCircularArc(line1.lineStartPt, line1.lineEndPt,
                             circle.circleCenterPt, (float)circle.circleRadius,
                             (float)circle.startAngle, (float)circle.endAngle))
                         {
@@ -430,7 +451,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
             foreach (var newCircle in new_circles)
             {
-                circle_data.add_circle(CircleId, newCircle.circleCenterPt, newCircle.circleRadius, 
+                circle_data.add_circle(CircleId, newCircle.circleCenterPt, newCircle.circleRadius,
                     newCircle.startAngle, newCircle.endAngle, newCircle.type);
                 CircleId++;
             }
@@ -475,7 +496,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
                     if (ellipse.type == 0)
                     {
-                        if (DoLineSegmentIntersectEllipse(line1.lineStartPt, line1.lineEndPt, ellipse.ellipseCenterPt, 
+                        if (DoLineSegmentIntersectEllipse(line1.lineStartPt, line1.lineEndPt, ellipse.ellipseCenterPt,
                             (float)ellipse.ellipseMajorAxis, (float)ellipse.ellipseMinorAxis, (float)ellipse.ellipseRotationAngle))
                         {
                             // Store the intersection information
@@ -486,7 +507,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     }
                     else if (ellipse.type == 1)
                     {
-                        if (DoLineSegmentIntersectEllipticalArc(line1.lineStartPt, line1.lineEndPt, ellipse.ellipseCenterPt, 
+                        if (DoLineSegmentIntersectEllipticalArc(line1.lineStartPt, line1.lineEndPt, ellipse.ellipseCenterPt,
                             (float)ellipse.ellipseMajorAxis, (float)ellipse.ellipseMinorAxis, (float)ellipse.ellipseRotationAngle,
                             (float)ellipse.startParameter, (float)ellipse.endParameter))
                         {
@@ -521,7 +542,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     if (intersectingEllipse.type == 0)
                     {
                         // Ellipse intersection
-                        GetLineEllipseIntersectionPoints(originalLine.lineStartPt, originalLine.lineEndPt, intersectingEllipse.ellipseCenterPt, 
+                        GetLineEllipseIntersectionPoints(originalLine.lineStartPt, originalLine.lineEndPt, intersectingEllipse.ellipseCenterPt,
                             (float)intersectingEllipse.ellipseMajorAxis, (float)intersectingEllipse.ellipseMinorAxis,
                             (float)intersectingEllipse.ellipseRotationAngle,
                             out Vector2 p0, out Vector2 p1, out bool hasSecond);
@@ -533,10 +554,10 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     else if (intersectingEllipse.type == 1)
                     {
                         // Elliptical arc intersection
-                        GetLineEllipticalArcIntersectionPoints(originalLine.lineStartPt, originalLine.lineEndPt, intersectingEllipse.ellipseCenterPt, 
-                        (float)intersectingEllipse.ellipseMajorAxis, (float)intersectingEllipse.ellipseMinorAxis, 
-                        (float)intersectingEllipse.ellipseRotationAngle, 
-                        (float)intersectingEllipse.startParameter, (float)intersectingEllipse.endParameter, 
+                        GetLineEllipticalArcIntersectionPoints(originalLine.lineStartPt, originalLine.lineEndPt, intersectingEllipse.ellipseCenterPt,
+                        (float)intersectingEllipse.ellipseMajorAxis, (float)intersectingEllipse.ellipseMinorAxis,
+                        (float)intersectingEllipse.ellipseRotationAngle,
+                        (float)intersectingEllipse.startParameter, (float)intersectingEllipse.endParameter,
                         out Vector2 p0, out Vector2 p1, out bool hasSecond);
 
                         intersectionPoints.Add(p0);
@@ -606,7 +627,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     {
                         GetLineEllipseIntersectionPoints(intersectingLine.lineStartPt, intersectingLine.lineEndPt,
                             originalEllipse.ellipseCenterPt, (float)originalEllipse.ellipseMajorAxis, (float)originalEllipse.ellipseMinorAxis,
-                            (float)originalEllipse.ellipseRotationAngle,                            
+                            (float)originalEllipse.ellipseRotationAngle,
                             out p0, out p1, out hasSecond);
                     }
                     else
@@ -618,11 +639,11 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                             out p0, out p1, out hasSecond);
                     }
 
-                    hitAngles.Add(EllipsePointAngle(p0, originalEllipse.ellipseCenterPt, originalEllipse.ellipseMajorAxis, 
+                    hitAngles.Add(EllipsePointAngle(p0, originalEllipse.ellipseCenterPt, originalEllipse.ellipseMajorAxis,
                         originalEllipse.ellipseMinorAxis, originalEllipse.ellipseRotationAngle));
 
                     if (hasSecond)
-                        hitAngles.Add(EllipsePointAngle(p1, originalEllipse.ellipseCenterPt, originalEllipse.ellipseMajorAxis, 
+                        hitAngles.Add(EllipsePointAngle(p1, originalEllipse.ellipseCenterPt, originalEllipse.ellipseMajorAxis,
                             originalEllipse.ellipseMinorAxis, originalEllipse.ellipseRotationAngle));
                 }
 
@@ -756,7 +777,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
             foreach (var newEllipse in new_ellipses)
             {
                 ellipse_data.add_ellipse(EllipseId, newEllipse.ellipseCenterPt, newEllipse.ellipseMajorAxis, newEllipse.ellipseMinorAxis,
-                    newEllipse.ellipseRotationAngle,newEllipse.type, newEllipse.startParameter, newEllipse.endParameter);
+                    newEllipse.ellipseRotationAngle, newEllipse.type, newEllipse.startParameter, newEllipse.endParameter);
 
                 EllipseId++;
             }
@@ -767,14 +788,14 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
 
-
-
         public static void Circle_Circle_Intersection_and_Splitting(ref circlelist_store circle_data)
         {
             // Perform circle-circle intersection and splitting
             // Circle - Circle Intersection and Splitting
+
             // Dictionary to store circle id and their corresponding
             Dictionary<int, List<int>> circle_intersections = new Dictionary<int, List<int>>();
+
             // Create a list of circles to process
             foreach (var circle in circle_data.circleMap.Values)
             {
@@ -782,10 +803,396 @@ namespace dxf_to_surface.src.model_store.drawing_objects
             }
 
 
+            for (int i = 0; i < circle_data.circleMap.Count; i++)
+            {
+                circle_store circle1 = circle_data.circleMap.ElementAt(i).Value;
+
+                for (int j = i + 1; j < circle_data.circleMap.Count; j++)
+                {
+                    circle_store circle2 = circle_data.circleMap.ElementAt(j).Value;
+
+                    // Gaurd to prevent circle self intersection
+                    if (circle1.circle_id != circle2.circle_id)
+                    {
+                        if (DoArcsIntersect(circle1.circleCenterPt, (float)circle1.circleRadius, (float)circle1.startAngle, (float)circle1.endAngle,
+                                             circle2.circleCenterPt, (float)circle2.circleRadius, (float)circle2.startAngle, (float)circle2.endAngle))
+                        {
+                            // Store the intersection information
+                            circle_intersections[circle1.circle_id].Add(circle2.circle_id);
+                            circle_intersections[circle2.circle_id].Add(circle1.circle_id);
+                        }
+                    }
+                }
+            }
+
+
+            // Create a new list to hold the split circles
+            List<circle_store> new_circles = new List<circle_store>();
+
+
+            foreach (var kvp in circle_intersections)
+            {
+                circle_store originalCircle = circle_data.circleMap[kvp.Key];
+                List<int> intersectingIds = kvp.Value;
+
+                // Collect hit angles (not points).
+                var hitAngles = new List<double>();
+                foreach (int id in intersectingIds)
+                {
+                    var other = circle_data.circleMap[id];
+                    GetArcArcIntersectionPoints(
+                        originalCircle.circleCenterPt, (float)originalCircle.circleRadius,
+                        (float)originalCircle.startAngle, (float)originalCircle.endAngle,
+                        other.circleCenterPt, (float)other.circleRadius,
+                        (float)other.startAngle, (float)other.endAngle,
+                        out var p0, out var p1, out bool hasSecond);
+                    if (p0 != default) hitAngles.Add(PointAngle(p0, originalCircle.circleCenterPt));
+                    if (hasSecond) hitAngles.Add(PointAngle(p1, originalCircle.circleCenterPt));
+                }
+
+                if (originalCircle.type == 0)
+                {
+                    var distinct = DedupSorted(hitAngles.Select(Normalize).OrderBy(a => a).ToList(), 1e-9);
+                    if (distinct.Count < 2) { new_circles.Add(originalCircle); continue; }
+                    for (int i = 0; i < distinct.Count; i++)
+                    {
+                        double a0 = distinct[i], a1 = distinct[(i + 1) % distinct.Count];
+                        new_circles.Add(MakeArc(originalCircle, a0, a1));
+                    }
+                }
+                else
+                {
+                    double startA = Normalize(originalCircle.startAngle);
+                    double endA = Normalize(originalCircle.endAngle);
+                    double sweep = CCWSweep(startA, endA);
+                    var rel = new List<double> { 0.0 };
+                    foreach (double a in hitAngles)
+                    {
+                        double r = CCWSweep(startA, Normalize(a));
+                        if (r > 1e-9 && r < sweep - 1e-9) rel.Add(r);
+                    }
+                    rel.Add(sweep);
+                    rel.Sort();
+                    var relDistinct = DedupSorted(rel, 1e-9);
+                    if (relDistinct.Count <= 2) { new_circles.Add(originalCircle); continue; }
+                    var splitAngles = new List<double>();
+                    for (int i = 0; i < relDistinct.Count; i++)
+                    {
+                        if (i == 0) splitAngles.Add(startA);
+                        else if (i == relDistinct.Count - 1) splitAngles.Add(endA);
+                        else splitAngles.Add(Normalize(startA + relDistinct[i]));
+                    }
+                    for (int i = 0; i < splitAngles.Count - 1; i++)
+                        new_circles.Add(MakeArc(originalCircle, splitAngles[i], splitAngles[i + 1]));
+                }
+            }
+
+
+
+            // Clear the original circles and add the new split circles
+            circle_data.clear_circles();
+
+            int CircleId = 0;
+
+            foreach (var newCircle in new_circles)
+            {
+                circle_data.add_circle(CircleId, newCircle.circleCenterPt, newCircle.circleRadius,
+                    newCircle.startAngle, newCircle.endAngle, newCircle.type);
+                CircleId++;
+            }
+
         }
 
 
 
+        public static void Circle_Ellipse_Intersection_and_Splitting(ref circlelist_store circle_data, ref ellipselist_store ellipse_data)
+        {
+
+            // Perform circle-ellipse intersection and splitting
+            // Circle - Ellipse Intersection and Splitting
+
+            // Dictionary to store circle id and their corresponding
+            Dictionary<int, List<int>> circleellipse_intersections = new Dictionary<int, List<int>>();
+            Dictionary<int, List<int>> ellipsecircle_intersections = new Dictionary<int, List<int>>();
+
+            // Create a list of circles to process
+            foreach (var circle in circle_data.circleMap.Values)
+            {
+                circleellipse_intersections[circle.circle_id] = new List<int>();
+            }
+
+            // Create a list of ellipses to process
+            foreach (var ellipse in ellipse_data.ellipseMap.Values)
+            {
+                ellipsecircle_intersections[ellipse.ellipse_id] = new List<int>();
+            }
+
+
+
+            for (int i = 0; i < circle_data.circleMap.Count; i++)
+            {
+                circle_store circle1 = circle_data.circleMap.ElementAt(i).Value;
+
+                for (int j = 0; j < ellipse_data.ellipseMap.Count; j++)
+                {
+                    ellipse_store ellipse = ellipse_data.ellipseMap.ElementAt(j).Value;
+
+                    if (DoCircleEllipseIntersect(circle1.circleCenterPt, (float)circle1.circleRadius,
+                        (float)circle1.startAngle, (float)circle1.endAngle,
+                        ellipse.ellipseCenterPt, (float)ellipse.ellipseMajorAxis,
+                        (float)ellipse.ellipseMinorAxis, (float)ellipse.ellipseRotationAngle,
+                        (float)ellipse.startParameter, (float)ellipse.endParameter))
+                    {
+                        // Store the intersection information
+                        circleellipse_intersections[circle1.circle_id].Add(ellipse.ellipse_id);
+                        ellipsecircle_intersections[ellipse.ellipse_id].Add(circle1.circle_id);
+                    }
+                }
+            }
+
+
+            // --- Split circles ---
+            var new_circles = new List<circle_store>();
+            foreach (var kvp in circleellipse_intersections)
+            {
+                circle_store originalCircle = circle_data.circleMap[kvp.Key];
+
+                var hitAngles = new List<double>();
+                foreach (int ellipseId in kvp.Value)
+                {
+                    ellipse_store ellipse = ellipse_data.ellipseMap[ellipseId];
+                    GetCircleEllipseIntersectionPoints(
+                        originalCircle.circleCenterPt, (float)originalCircle.circleRadius,
+                        (float)originalCircle.startAngle, (float)originalCircle.endAngle,
+                        ellipse.ellipseCenterPt,
+                        (float)ellipse.ellipseMajorAxis, (float)ellipse.ellipseMinorAxis,
+                        (float)ellipse.ellipseRotationAngle,
+                        (float)ellipse.startParameter, (float)ellipse.endParameter,
+                        out var pts);
+                    foreach (var p in pts)
+                        hitAngles.Add(PointAngle(p, originalCircle.circleCenterPt));
+                }
+                SplitCircleAtAngles(originalCircle, hitAngles, new_circles);
+            }
+
+
+
+            // --- Split ellipses ---
+            var new_ellipses = new List<ellipse_store>();
+            foreach (var kvp in ellipsecircle_intersections)
+            {
+                ellipse_store originalEllipse = ellipse_data.ellipseMap[kvp.Key];
+
+                var hitParams = new List<double>();   // eccentric anomalies
+                foreach (int circleId in kvp.Value)
+                {
+                    circle_store circle = circle_data.circleMap[circleId];
+                    GetCircleEllipseIntersectionPoints(
+                        circle.circleCenterPt, (float)circle.circleRadius,
+                        (float)circle.startAngle, (float)circle.endAngle,
+                        originalEllipse.ellipseCenterPt,
+                        (float)originalEllipse.ellipseMajorAxis, (float)originalEllipse.ellipseMinorAxis,
+                        (float)originalEllipse.ellipseRotationAngle,
+                        (float)originalEllipse.startParameter, (float)originalEllipse.endParameter,
+                        out var pts);
+                    foreach (var p in pts)
+                        hitParams.Add(EllipsePointAngle(
+                            p, originalEllipse.ellipseCenterPt,
+                            originalEllipse.ellipseMajorAxis, originalEllipse.ellipseMinorAxis,
+                            originalEllipse.ellipseRotationAngle));
+                }
+                SplitEllipseAtParameters(originalEllipse, hitParams, new_ellipses);
+            }
+
+
+            // Clear the original circles and add the new split circles
+            circle_data.clear_circles();
+
+            int CircleId = 0;
+
+            foreach (var newCircle in new_circles)
+            {
+                circle_data.add_circle(CircleId, newCircle.circleCenterPt, newCircle.circleRadius,
+                    newCircle.startAngle, newCircle.endAngle, newCircle.type);
+                CircleId++;
+            }
+
+
+
+            // Clear the original ellipses and add the new split ellipses
+            ellipse_data.clear_ellipses();
+
+            int EllipseId = 0;
+
+            foreach (var newEllipse in new_ellipses)
+            {
+                ellipse_data.add_ellipse(EllipseId, newEllipse.ellipseCenterPt, newEllipse.ellipseMajorAxis, newEllipse.ellipseMinorAxis,
+                    newEllipse.ellipseRotationAngle, newEllipse.type, newEllipse.startParameter, newEllipse.endParameter);
+
+                EllipseId++;
+            }
+
+        }
+
+
+        public static void Ellipse_Ellipse_Intersection_and_Splitting(ref ellipselist_store ellipse_data)
+        {
+            // Perform ellipse-ellipse intersection and splitting
+            // Ellipse - Ellipse Intersection and Splitting
+            // Dictionary to store ellipse id and their corresponding
+            Dictionary<int, List<int>> ellipse_intersections = new Dictionary<int, List<int>>();
+            // Create a list of ellipses to process
+            foreach (var ellipse in ellipse_data.ellipseMap.Values)
+            {
+                ellipse_intersections[ellipse.ellipse_id] = new List<int>();
+            }
+
+
+            for (int i = 0; i < ellipse_data.ellipseMap.Count; i++)
+            {
+                ellipse_store e1 = ellipse_data.ellipseMap.ElementAt(i).Value;
+                for (int j = i + 1; j < ellipse_data.ellipseMap.Count; j++)
+                {
+                    ellipse_store e2 = ellipse_data.ellipseMap.ElementAt(j).Value;
+
+                    if (DoEllipsesIntersect(
+                            e1.ellipseCenterPt,
+                            (float)e1.ellipseMajorAxis, (float)e1.ellipseMinorAxis,
+                            (float)e1.ellipseRotationAngle,
+                            (float)e1.startParameter, (float)e1.endParameter,
+                            e2.ellipseCenterPt,
+                            (float)e2.ellipseMajorAxis, (float)e2.ellipseMinorAxis,
+                            (float)e2.ellipseRotationAngle,
+                            (float)e2.startParameter, (float)e2.endParameter))
+                    {
+                        ellipse_intersections[e1.ellipse_id].Add(e2.ellipse_id);
+                        ellipse_intersections[e2.ellipse_id].Add(e1.ellipse_id);
+                    }
+                }
+            }
+
+            // --- Split phase ---
+            var new_ellipses = new List<ellipse_store>();
+
+            foreach (var kvp in ellipse_intersections)
+            {
+                ellipse_store original = ellipse_data.ellipseMap[kvp.Key];
+
+                // Eccentric anomalies (on `original`) of every hit with every partner.
+                var hitParams = new List<double>();
+
+                foreach (int otherId in kvp.Value)
+                {
+                    ellipse_store other = ellipse_data.ellipseMap[otherId];
+
+                    GetEllipseEllipseIntersectionPoints(
+                        original.ellipseCenterPt,
+                        (float)original.ellipseMajorAxis, (float)original.ellipseMinorAxis,
+                        (float)original.ellipseRotationAngle,
+                        (float)original.startParameter, (float)original.endParameter,
+                        other.ellipseCenterPt,
+                        (float)other.ellipseMajorAxis, (float)other.ellipseMinorAxis,
+                        (float)other.ellipseRotationAngle,
+                        (float)other.startParameter, (float)other.endParameter,
+                        out var pts);
+
+                    foreach (var p in pts)
+                    {
+                        // Convert each hit point to eccentric anomaly on `original`.
+                        hitParams.Add(EllipsePointAngle(
+                            p,
+                            original.ellipseCenterPt,
+                            original.ellipseMajorAxis,
+                            original.ellipseMinorAxis,
+                            original.ellipseRotationAngle));
+                    }
+                }
+
+                SplitEllipseAtParameters(original, hitParams, new_ellipses);
+            }
+
+
+            // Clear the original ellipses and add the new split ellipses
+            ellipse_data.clear_ellipses();
+
+            int EllipseId = 0;
+
+            foreach (var newEllipse in new_ellipses)
+            {
+                ellipse_data.add_ellipse(EllipseId, newEllipse.ellipseCenterPt, newEllipse.ellipseMajorAxis, newEllipse.ellipseMinorAxis,
+                    newEllipse.ellipseRotationAngle, newEllipse.type, newEllipse.startParameter, newEllipse.endParameter);
+
+                EllipseId++;
+            }
+
+        }
+
+
+        #region "Line - Line Helper Functions"
+
+        /// <summary>
+        /// Returns true iff segments (p1,p2) and (p3,p4) cross transversally
+        /// at a point strictly inside both segments' spans (within eps slack).
+        /// Collinear overlaps return false — use TryGetCollinearOverlap for those.
+        /// </summary>
+        public static bool DoLinesIntersect(
+            Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double eps = 1e-9)
+        {
+            double d1x = p2.X - p1.X, d1y = p2.Y - p1.Y;
+            double d2x = p4.X - p3.X, d2y = p4.Y - p3.Y;
+
+            double len1sq = d1x * d1x + d1y * d1y;
+            double len2sq = d2x * d2x + d2y * d2y;
+            if (len1sq < eps * eps || len2sq < eps * eps)
+                return false;                       // degenerate segment
+
+            double cross = d1x * d2y - d1y * d2x;   // d1 x d2
+            double scale = Math.Sqrt(len1sq * len2sq);
+            if (Math.Abs(cross) < eps * Math.Max(scale, 1.0))
+                return false;                       // parallel (incl. collinear)
+
+            double rx = p3.X - p1.X, ry = p3.Y - p1.Y;
+            double t = (rx * d2y - ry * d2x) / cross;
+            double s = (rx * d1y - ry * d1x) / cross;
+
+            return t >= -eps && t <= 1.0 + eps
+                && s >= -eps && s <= 1.0 + eps;
+        }
+
+        /// <summary>
+        /// Computes the transversal intersection point of two segments.
+        /// Assumes DoLinesIntersect returned true for the same inputs
+        /// (same eps). Returns (0,0) if the inputs are not a proper
+        /// intersection — callers MUST gate on DoLinesIntersect.
+        /// </summary>
+        public static Vector2 GetLineSegmentIntersectionPoint(
+            Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double eps = 1e-9)
+        {
+            double d1x = p2.X - p1.X, d1y = p2.Y - p1.Y;
+            double d2x = p4.X - p3.X, d2y = p4.Y - p3.Y;
+
+            double cross = d1x * d2y - d1y * d2x;
+            double scale = Math.Sqrt((d1x * d1x + d1y * d1y) * (d2x * d2x + d2y * d2y));
+            if (Math.Abs(cross) < eps * Math.Max(scale, 1.0))
+                return new Vector2(0, 0);           // parallel
+
+            double rx = p3.X - p1.X, ry = p3.Y - p1.Y;
+            double t = (rx * d2y - ry * d2x) / cross;
+
+            // Snap to the endpoints when the intersection is within eps of a vertex.
+            // This prevents 1e-12-length stubs that become degree-1 nodes and get
+            // pruned, disconnecting the graph.
+            if (t < eps) t = 0.0;
+            else if (t > 1 - eps) t = 1.0;
+
+            return new Vector2(
+                (float)(p1.X + t * d1x),
+                (float)(p1.Y + t * d1y));
+        }
+
+
+
+        #endregion
 
 
         #region "Line - Circle Helper Functions"
@@ -960,8 +1367,6 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         }
 
         #endregion
-
-
 
 
         #region "Line - Ellipse Helper Functions"
@@ -1176,7 +1581,612 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         #endregion
 
 
+        #region "Circle - Circle Helper Functions"
 
+
+        /// <summary>
+        /// Solves the intersection of two circles.
+        /// Returns false if they do not intersect (separate, or one inside the other,
+        /// or concentric with different radii). Returns true with one point for a
+        /// tangency (external or internal), two points for a proper crossing.
+        /// Does NOT handle the coincident case (d == 0, r1 == r2) — caller must check.
+        /// </summary>
+        private static bool TryIntersectTwoCircles(
+            Vector2 c1, double r1, Vector2 c2, double r2,
+            out Vector2 p0, out Vector2 p1, out bool hasSecond,
+            double eps = 1e-9)
+        {
+            p0 = p1 = default;
+            hasSecond = false;
+
+            double dx = c2.X - c1.X, dy = c2.Y - c1.Y;
+            double dSq = dx * dx + dy * dy;
+            double d = Math.Sqrt(dSq);
+
+            // Concentric: no intersection unless coincident (caller handles coincident).
+            if (d < eps)
+                return false;
+
+            // No intersection if separate or one inside the other.
+            if (d > r1 + r2 + eps) return false;
+            if (d < Math.Abs(r1 - r2) - eps) return false;
+
+            // Distance from c1 to the radical line along the c1->c2 axis.
+            double a = (r1 * r1 - r2 * r2 + dSq) / (2.0 * d);
+
+            // Half-chord length. Clamp to 0 to absorb rounding at tangency.
+            double hSq = r1 * r1 - a * a;
+            if (hSq < 0) hSq = 0;
+            double h = Math.Sqrt(hSq);
+
+            // Midpoint on the radical line.
+            double mx = c1.X + a * dx / d;
+            double my = c1.Y + a * dy / d;
+
+            // Perpendicular unit direction.
+            double px = -dy / d, py = dx / d;
+
+            p0 = new Vector2((float)(mx + h * px), (float)(my + h * py));
+
+            if (h > eps)
+            {
+                p1 = new Vector2((float)(mx - h * px), (float)(my - h * py));
+                hasSecond = true;
+            }
+            return true;
+        }
+
+
+
+        /// <summary>
+        /// Returns true iff the two arcs (or circles, if startAngle == endAngle meaning
+        /// full circle — see note) share at least one intersection point.
+        /// Angles are radians, CCW, arc convention [startAngle, endAngle] with wrap.
+        /// </summary>
+        private static bool DoArcsIntersect(
+            Vector2 center1, float radius1, float startAngle1, float endAngle1,
+            Vector2 center2, float radius2, float startAngle2, float endAngle2,
+            double eps = 1e-9)
+        {
+            // --- Step 1: solve the two-circle intersection ---
+            if (!TryIntersectTwoCircles(center1, radius1, center2, radius2,
+                                        out Vector2 p0, out Vector2 p1,
+                                        out bool hasSecond, eps))
+                return false;
+
+            // --- Step 2: filter by arc angular spans ---
+            if (AngleInArc(PointAngle(p0, center1), startAngle1, endAngle1) &&
+                AngleInArc(PointAngle(p0, center2), startAngle2, endAngle2))
+                return true;
+
+            if (hasSecond)
+            {
+                if (AngleInArc(PointAngle(p1, center1), startAngle1, endAngle1) &&
+                    AngleInArc(PointAngle(p1, center2), startAngle2, endAngle2))
+                    return true;
+            }
+            return false;
+        }
+
+        public static void GetArcArcIntersectionPoints(
+            Vector2 center1, float radius1, float startAngle1, float endAngle1,
+            Vector2 center2, float radius2, float startAngle2, float endAngle2,
+            out Vector2 p0, out Vector2 p1, out bool hasSecond)
+        {
+            p0 = p1 = default; hasSecond = false;
+
+            if (!TryIntersectTwoCircles(center1, radius1, center2, radius2,
+                                        out Vector2 q0, out Vector2 q1, out bool two, 1e-9))
+                return;
+
+            bool got0 = AngleInArc(PointAngle(q0, center1), startAngle1, endAngle1)
+                     && AngleInArc(PointAngle(q0, center2), startAngle2, endAngle2);
+            bool got1 = two
+                     && AngleInArc(PointAngle(q1, center1), startAngle1, endAngle1)
+                     && AngleInArc(PointAngle(q1, center2), startAngle2, endAngle2);
+
+            if (got0) { p0 = q0; if (got1) { p1 = q1; hasSecond = true; } }
+            else if (got1) { p0 = q1; }
+        }
+
+
+        // Removes consecutive duplicates within `eps` from a sorted list.
+        // Returns a new list; the input is not modified.
+        private static List<double> DedupSorted(List<double> sorted, double eps = 1e-9)
+        {
+            var result = new List<double>(sorted.Count);
+            foreach (double v in sorted)
+            {
+                if (result.Count == 0 || Math.Abs(v - result[result.Count - 1]) > eps)
+                    result.Add(v);
+            }
+            return result;
+        }
+
+
+        // Builds an arc segment of `original` between the two angles (radians, CCW).
+        // arcStartPt/arcEndPt are derived from the angles, not passed in, so the
+        // stored points and angles are always consistent.
+        private static circle_store MakeArc(circle_store original, double startAngle, double endAngle)
+        {
+            float cx = original.circleCenterPt.X;
+            float cy = original.circleCenterPt.Y;
+            float r = (float)original.circleRadius;
+
+            return new circle_store
+            {
+                circle_id = 0,                    // reassigned by caller
+                circleCenterPt = original.circleCenterPt,
+                circleRadius = original.circleRadius,
+                type = 1,                    // arc
+                startAngle = (float)startAngle,
+                endAngle = (float)endAngle,
+                arcStartPt = new Vector2(
+                                         cx + r * (float)Math.Cos(startAngle),
+                                         cy + r * (float)Math.Sin(startAngle)),
+                arcEndPt = new Vector2(
+                                         cx + r * (float)Math.Cos(endAngle),
+                                         cy + r * (float)Math.Sin(endAngle))
+            };
+        }
+
+
+        #endregion
+
+
+        #region "Circle - Ellipse Helper Functions"
+
+        /// <summary>
+        /// Finds circle-ellipse intersections by sampling g(θ) on the circle and
+        /// refining sign changes. Returns θ values on the circle, sorted ascending.
+        /// Tangencies are included as roots (single θ, not a sign change).
+        /// </summary>
+        private static List<double> SolveCircleEllipse(
+            Vector2 circleCenter, double circleRadius,
+            Vector2 ellipseCenter, double a, double b, double rotation,
+            double eps = 1e-9)
+        {
+            var hits = new List<double>();
+            if (circleRadius < eps || a < eps || b < eps) return hits;
+
+            double cosT = Math.Cos(rotation), sinT = Math.Sin(rotation);
+            double ux = cosT, uy = sinT;
+            double vx = -sinT, vy = cosT;
+
+            double a2 = a * a, b2 = b * b;
+
+            // F(P) for a point P, in the ellipse's local frame.
+            double F(double px, double py)
+            {
+                double ex = px - ellipseCenter.X, ey = py - ellipseCenter.Y;
+                double lu = ex * ux + ey * uy;
+                double lv = ex * vx + ey * vy;
+                return (lu * lu) / a2 + (lv * lv) / b2 - 1.0;
+            }
+
+            // g(θ) = F(circle point at θ)
+            double G(double theta)
+            {
+                double px = circleCenter.X + circleRadius * Math.Cos(theta);
+                double py = circleCenter.Y + circleRadius * Math.Sin(theta);
+                return F(px, py);
+            }
+
+            const int N = 128;
+            double step = 2.0 * Math.PI / N;
+            double prevTheta = 0.0;
+            double prevG = G(prevTheta);
+
+            for (int i = 1; i <= N; i++)
+            {
+                double theta = i * step;
+                double g = G(theta);
+
+                // Sign change: bisection refine.
+                if (prevG * g < 0)
+                {
+                    double lo = prevTheta, hi = theta;
+                    double glo = prevG;
+                    for (int k = 0; k < 60; k++)
+                    {
+                        double mid = 0.5 * (lo + hi);
+                        double gmid = G(mid);
+                        if (gmid == 0) { lo = hi = mid; break; }
+                        if (glo * gmid < 0) { hi = mid; }
+                        else { lo = mid; glo = gmid; }
+                    }
+                    hits.Add(0.5 * (lo + hi));
+                }
+                else if (Math.Abs(g) < eps && Math.Abs(prevG) < eps)
+                {
+                    // Both samples near zero: tangent root, or a flat zero region.
+                    // Record the midpoint; the caller dedups.
+                    hits.Add(0.5 * (prevTheta + theta));
+                }
+
+                prevTheta = theta;
+                prevG = g;
+            }
+
+            // Dedup within eps and sort (the wrap-around can put the last root
+            // before the first; normalize and sort).
+            hits.Sort();
+            var deduped = new List<double>();
+            foreach (double h in hits)
+            {
+                if (deduped.Count == 0 || Math.Abs(h - deduped[deduped.Count - 1]) > 1e-6)
+                    deduped.Add(h);
+            }
+            return deduped;
+        }
+
+
+
+        /// <summary>
+        /// Returns true iff the circle crosses the ellipse's boundary at least once,
+        /// AND at least one such crossing lies within both angular/parametric spans.
+        /// Pass startAngle = 0, endAngle = 2π for a full circle; similarly
+        /// startParameter = 0, endParameter = 2π for a full ellipse.
+        /// </summary>
+        public static bool DoCircleEllipseIntersect(
+            Vector2 circleCenter, float circleRadius, float circleStartAngle, float circleEndAngle,
+            Vector2 ellipseCenter, float ellipseMajorAxis, float ellipseMinorAxis, float ellipseRotationAngle,
+            float ellipseStartParameter, float ellipseEndParameter)
+        {
+            var thetas = SolveCircleEllipse(
+                circleCenter, circleRadius,
+                ellipseCenter, ellipseMajorAxis, ellipseMinorAxis, ellipseRotationAngle);
+            if (thetas.Count == 0) return false;
+
+            foreach (double theta in thetas)
+            {
+                // Circle-side filter
+                if (!AngleInArc(theta, circleStartAngle, circleEndAngle)) continue;
+
+                // Ellipse-side filter: convert the hit point to eccentric anomaly
+                double px = circleCenter.X + circleRadius * Math.Cos(theta);
+                double py = circleCenter.Y + circleRadius * Math.Sin(theta);
+                var p = new Vector2((float)px, (float)py);
+                double u = EllipsePointAngle(p, ellipseCenter, ellipseMajorAxis, ellipseMinorAxis, ellipseRotationAngle);
+                if (AngleInArc(u, ellipseStartParameter, ellipseEndParameter)) return true;
+            }
+            return false;
+        }
+
+
+
+        public static void GetCircleEllipseIntersectionPoints(
+    Vector2 circleCenter, float circleRadius, float circleStartAngle, float circleEndAngle,
+    Vector2 ellipseCenter, float ellipseMajorAxis, float ellipseMinorAxis, float ellipseRotationAngle,
+    float ellipseStartParameter, float ellipseEndParameter,
+    out List<Vector2> points)
+        {
+            points = new List<Vector2>();
+
+            var thetas = SolveCircleEllipse(
+                circleCenter, circleRadius,
+                ellipseCenter, ellipseMajorAxis, ellipseMinorAxis, ellipseRotationAngle);
+
+            foreach (double theta in thetas)
+            {
+                if (!AngleInArc(theta, circleStartAngle, circleEndAngle)) continue;
+
+                double px = circleCenter.X + circleRadius * Math.Cos(theta);
+                double py = circleCenter.Y + circleRadius * Math.Sin(theta);
+                var p = new Vector2((float)px, (float)py);
+
+                double u = EllipsePointAngle(p, ellipseCenter, ellipseMajorAxis, ellipseMinorAxis, ellipseRotationAngle);
+                if (AngleInArc(u, ellipseStartParameter, ellipseEndParameter))
+                    points.Add(p);
+            }
+        }
+
+
+        /// <summary>
+        /// Splits a circle (type 0, wrap-around) or arc (type 1, bounded) at the given
+        /// angles. Unchanged if fewer than 2 distinct angles (circle) or no interior
+        /// angles (arc). Appends results to `output`.
+        /// </summary>
+        private static void SplitCircleAtAngles(
+            circle_store original, List<double> hitAngles, List<circle_store> output)
+        {
+            if (hitAngles.Count == 0) { output.Add(original); return; }
+
+            if (original.type == 0)
+            {
+                var distinct = DedupSorted(
+                    hitAngles.Select(Normalize).OrderBy(a => a).ToList(), 1e-6);
+                if (distinct.Count < 2) { output.Add(original); return; }
+                for (int i = 0; i < distinct.Count; i++)
+                    output.Add(MakeArc(original,
+                                       distinct[i],
+                                       distinct[(i + 1) % distinct.Count]));
+            }
+            else // type == 1, arc
+            {
+                double startA = Normalize(original.startAngle);
+                double endA = Normalize(original.endAngle);
+                double sweep = CCWSweep(startA, endA);
+
+                var rel = new List<double> { 0.0 };
+                foreach (double a in hitAngles)
+                {
+                    double r = CCWSweep(startA, Normalize(a));
+                    if (r > 1e-9 && r < sweep - 1e-9) rel.Add(r);
+                }
+                rel.Add(sweep);
+                rel.Sort();
+
+                var relDistinct = DedupSorted(rel, 1e-6);
+                if (relDistinct.Count <= 2) { output.Add(original); return; }
+
+                var splitAngles = new List<double>(relDistinct.Count);
+                for (int i = 0; i < relDistinct.Count; i++)
+                {
+                    if (i == 0) splitAngles.Add(startA);
+                    else if (i == relDistinct.Count - 1) splitAngles.Add(endA);
+                    else splitAngles.Add(Normalize(startA + relDistinct[i]));
+                }
+                for (int i = 0; i < splitAngles.Count - 1; i++)
+                    output.Add(MakeArc(original, splitAngles[i], splitAngles[i + 1]));
+            }
+        }
+
+        /// <summary>
+        /// Splits an ellipse (type 0, wrap-around) or elliptical arc (type 1, bounded)
+        /// at the given eccentric anomalies. Same structure as SplitCircleAtAngles.
+        /// </summary>
+        private static void SplitEllipseAtParameters(
+            ellipse_store original, List<double> hitParams, List<ellipse_store> output)
+        {
+            if (hitParams.Count == 0) { output.Add(original); return; }
+
+            if (original.type == 0)
+            {
+                var distinct = DedupSorted(
+                    hitParams.Select(Normalize).OrderBy(a => a).ToList(), 1e-6);
+                if (distinct.Count < 2) { output.Add(original); return; }
+                for (int i = 0; i < distinct.Count; i++)
+                    output.Add(MakeEllipseArc(original,
+                                              distinct[i],
+                                              distinct[(i + 1) % distinct.Count]));
+            }
+            else // type == 1, elliptical arc
+            {
+                double startA = Normalize(original.startParameter);
+                double endA = Normalize(original.endParameter);
+                double sweep = CCWSweep(startA, endA);
+
+                var rel = new List<double> { 0.0 };
+                foreach (double a in hitParams)
+                {
+                    double r = CCWSweep(startA, Normalize(a));
+                    if (r > 1e-9 && r < sweep - 1e-9) rel.Add(r);
+                }
+                rel.Add(sweep);
+                rel.Sort();
+
+                var relDistinct = DedupSorted(rel, 1e-6);
+                if (relDistinct.Count <= 2) { output.Add(original); return; }
+
+                var splitParams = new List<double>(relDistinct.Count);
+                for (int i = 0; i < relDistinct.Count; i++)
+                {
+                    if (i == 0) splitParams.Add(startA);
+                    else if (i == relDistinct.Count - 1) splitParams.Add(endA);
+                    else splitParams.Add(Normalize(startA + relDistinct[i]));
+                }
+                for (int i = 0; i < splitParams.Count - 1; i++)
+                    output.Add(MakeEllipseArc(original, splitParams[i], splitParams[i + 1]));
+            }
+        }
+
+        private static ellipse_store MakeEllipseArc(
+            ellipse_store original, double startParam, double endParam)
+        {
+            return new ellipse_store
+            {
+                ellipse_id = 0,
+                ellipseCenterPt = original.ellipseCenterPt,
+                ellipseMajorAxis = original.ellipseMajorAxis,
+                ellipseMinorAxis = original.ellipseMinorAxis,
+                ellipseRotationAngle = original.ellipseRotationAngle,
+                type = 1,
+                startParameter = (float)startParam,
+                endParameter = (float)endParam
+            };
+        }
+
+
+        #endregion
+
+
+        #region "Ellipse - Ellipse Helper Functions"
+
+        /// <summary>
+        /// Finds intersections of two ellipses by parameterizing the first ellipse
+        /// by its eccentric anomaly u and finding zeros of the second ellipse's
+        /// implicit function along that curve.
+        /// Returns eccentric anomalies u on ellipse 1, sorted ascending, deduped.
+        /// </summary>
+        private static List<double> SolveEllipseEllipse(
+            Vector2 c1, double a1, double b1, double rot1,
+            Vector2 c2, double a2, double b2, double rot2,
+            double eps = 1e-9)
+        {
+            var hits = new List<double>();
+            if (a1 < eps || b1 < eps || a2 < eps || b2 < eps) return hits;
+
+            // Ellipse 1 frame
+            double cos1 = Math.Cos(rot1), sin1 = Math.Sin(rot1);
+            double u1x = cos1, u1y = sin1;
+            double v1x = -sin1, v1y = cos1;
+
+            // Ellipse 2 frame
+            double cos2 = Math.Cos(rot2), sin2 = Math.Sin(rot2);
+            double u2x = cos2, u2y = sin2;
+            double v2x = -sin2, v2y = cos2;
+
+            double a2sq = a2 * a2, b2sq = b2 * b2;
+
+            // Point on ellipse 1 at eccentric anomaly u
+            void E1(double u, out double px, out double py)
+            {
+                px = c1.X + a1 * Math.Cos(u) * u1x + b1 * Math.Sin(u) * v1x;
+                py = c1.Y + a1 * Math.Cos(u) * u1y + b1 * Math.Sin(u) * v1y;
+            }
+
+            // Implicit function of ellipse 2 evaluated at a world point.
+            double F2(double px, double py)
+            {
+                double ex = px - c2.X, ey = py - c2.Y;
+                double lu = ex * u2x + ey * u2y;
+                double lv = ex * v2x + ey * v2y;
+                return (lu * lu) / a2sq + (lv * lv) / b2sq - 1.0;
+            }
+
+            // g(u) = F2(E1(u))
+            double G(double u)
+            {
+                E1(u, out double px, out double py);
+                return F2(px, py);
+            }
+
+            const int N = 256;   // two ellipses can have 4 roots; use denser sampling than circle-ellipse
+            double step = 2.0 * Math.PI / N;
+            double prevU = 0.0;
+            double prevG = G(prevU);
+
+            for (int i = 1; i <= N; i++)
+            {
+                double u = i * step;
+                double g = G(u);
+
+                if (prevG * g < 0)
+                {
+                    double lo = prevU, hi = u, glo = prevG;
+                    for (int k = 0; k < 60; k++)
+                    {
+                        double mid = 0.5 * (lo + hi);
+                        double gmid = G(mid);
+                        if (gmid == 0) { lo = hi = mid; break; }
+                        if (glo * gmid < 0) hi = mid;
+                        else { lo = mid; glo = gmid; }
+                    }
+                    hits.Add(0.5 * (lo + hi));
+                }
+                else if (Math.Abs(g) < eps && Math.Abs(prevG) < eps)
+                {
+                    hits.Add(0.5 * (prevU + u));   // tangent root
+                }
+
+                prevU = u;
+                prevG = g;
+            }
+
+            hits.Sort();
+            var deduped = new List<double>();
+            foreach (double h in hits)
+                if (deduped.Count == 0 || Math.Abs(h - deduped[deduped.Count - 1]) > 1e-6)
+                    deduped.Add(h);
+            return deduped;
+        }
+
+
+        /// <summary>
+        /// Returns true iff ellipses (c1,a1,b1,rot1) and (c2,a2,b2,rot2) cross,
+        /// AND at least one crossing lies in both parametric spans.
+        /// </summary>
+        public static bool DoEllipsesIntersect(
+            Vector2 center1, float a1, float b1, float rotation1,
+            float startParam1, float endParam1,
+            Vector2 center2, float a2, float b2, float rotation2,
+            float startParam2, float endParam2)
+        {
+            var us = SolveEllipseEllipse(
+                center1, a1, b1, rotation1,
+                center2, a2, b2, rotation2);
+            if (us.Count == 0) return false;
+
+            // Ellipse 1 frame (for evaluating points and converting to ellipse-2 param)
+            double cos1 = Math.Cos(rotation1), sin1 = Math.Sin(rotation1);
+            double u1x = cos1, u1y = sin1, v1x = -sin1, v1y = cos1;
+
+            foreach (double u in us)
+            {
+                if (!AngleInArc(u, startParam1, endParam1)) continue;
+
+                double px = center1.X + a1 * Math.Cos(u) * u1x + b1 * Math.Sin(u) * v1x;
+                double py = center1.Y + a1 * Math.Cos(u) * u1y + b1 * Math.Sin(u) * v1y;
+                var p = new Vector2((float)px, (float)py);
+
+                double v = EllipsePointAngle(p, center2, a2, b2, rotation2);
+                if (AngleInArc(v, startParam2, endParam2)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Two-point getter. DROPS the 3rd and 4th intersections if they exist.
+        /// Use GetEllipseEllipseIntersectionPoints (List) for the split pass.
+        /// </summary>
+        public static void GetEllipticalArcArcIntersectionPoints(
+            Vector2 center1, float a1, float b1, float rotation1,
+            float startParam1, float endParam1,
+            Vector2 center2, float a2, float b2, float rotation2,
+            float startParam2, float endParam2,
+            out Vector2 p0, out Vector2 p1, out bool hasSecond)
+        {
+            p0 = p1 = default;
+            hasSecond = false;
+
+            GetEllipseEllipseIntersectionPoints(
+                center1, a1, b1, rotation1, startParam1, endParam1,
+                center2, a2, b2, rotation2, startParam2, endParam2,
+                out var pts);
+
+            if (pts.Count >= 1) p0 = pts[0];
+            if (pts.Count >= 2) { p1 = pts[1]; hasSecond = true; }
+        }
+
+        /// <summary>
+        /// Full getter: returns all intersections within both parametric spans.
+        /// </summary>
+        public static void GetEllipseEllipseIntersectionPoints(
+            Vector2 center1, float a1, float b1, float rotation1,
+            float startParam1, float endParam1,
+            Vector2 center2, float a2, float b2, float rotation2,
+            float startParam2, float endParam2,
+            out List<Vector2> points)
+        {
+            points = new List<Vector2>();
+
+            var us = SolveEllipseEllipse(
+                center1, a1, b1, rotation1,
+                center2, a2, b2, rotation2);
+            if (us.Count == 0) return;
+
+            double cos1 = Math.Cos(rotation1), sin1 = Math.Sin(rotation1);
+            double u1x = cos1, u1y = sin1, v1x = -sin1, v1y = cos1;
+
+            foreach (double u in us)
+            {
+                if (!AngleInArc(u, startParam1, endParam1)) continue;
+
+                double px = center1.X + a1 * Math.Cos(u) * u1x + b1 * Math.Sin(u) * v1x;
+                double py = center1.Y + a1 * Math.Cos(u) * u1y + b1 * Math.Sin(u) * v1y;
+                var p = new Vector2((float)px, (float)py);
+
+                double v = EllipsePointAngle(p, center2, a2, b2, rotation2);
+                if (AngleInArc(v, startParam2, endParam2))
+                    points.Add(p);
+            }
+        }
+
+
+
+
+        #endregion
 
     }
 }

@@ -23,6 +23,25 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
         public Vector2 lineStartPt;
         public Vector2 lineEndPt;
+
+
+        public Vector2 GetLinePoint(double t)
+        {
+            // Linear interpolation between start and end points
+            double x = lineStartPt.X + (lineEndPt.X - lineStartPt.X) * t;
+            double y = lineStartPt.Y + (lineEndPt.Y - lineStartPt.Y) * t;
+            return new Vector2((float)x, (float)y);
+
+        }
+        
+        public Vector2 GetLineDerivative()
+        {
+            // Get the derivative (tangent vector) of the line, which is constant along the line
+            Vector2 tangent = lineEndPt - lineStartPt;
+            float length = tangent.Length;
+            return length < 1e-12 ? new Vector2(0, 0) : tangent / length;
+        }
+
     }
 
 

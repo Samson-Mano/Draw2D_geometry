@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|c:\\users\\samin\\onedrive\\documents\\programming\\other programs\\002_main_program\\draw2d_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\halfedge_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\halfedge_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|c:\\users\\samin\\onedrive\\documents\\programming\\other programs\\002_main_program\\draw2d_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\intersectionsplitting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\intersectionsplitting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|c:\\users\\samin\\onedrive\\documents\\programming\\other programs\\002_main_program\\draw2d_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\region_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\region_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\ellipselist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,24 +27,20 @@
       "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\circlelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\global_variables\\gvariables_static.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\global_variables\\gvariables_static.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\drawingdata_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\drawingdata_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\global_variables\\gvariables_static.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\global_variables\\gvariables_static.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\events_handler\\file_events.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\events_handler\\file_events.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|solutionrelative:dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{341BFD86-20A7-486B-BFD9-729F7FA7FE0E}|dxf_to_surface\\dxf_to_surface.csproj|C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\geom_objects\\selectcircle_store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -203,79 +211,110 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "halfedge_store.cs",
+              "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\halfedge_store.cs",
+              "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\halfedge_store.cs",
+              "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\halfedge_store.cs",
+              "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\halfedge_store.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-22T06:59:06.667Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "region_store.cs",
+              "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\region_store.cs",
+              "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\region_store.cs",
+              "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\region_store.cs",
+              "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\region_store.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-22T04:58:18.115Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "IntersectionSplitting.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\IntersectionSplitting.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\IntersectionSplitting.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\IntersectionSplitting.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\IntersectionSplitting.cs",
-              "ViewState": "AgIAAOoCAAAAAAAAAAAAAHUCAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAEsFAAAAAAAAAAAowEgGAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-20T02:41:56.112Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "splinelist_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\splinelist_store.cs",
-              "ViewState": "AgIAAE4AAAAAAAAAAAAcwGkAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAA3wCgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-18T04:19:07.821Z"
+              "WhenOpened": "2026-11-18T04:19:07.821Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "circlelist_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\circlelist_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\circlelist_store.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\circlelist_store.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\circlelist_store.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAEsBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADsAAAAAAAAAAAAgwFAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-17T06:09:00.042Z"
+              "WhenOpened": "2026-11-17T06:09:00.042Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "ellipselist_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\ellipselist_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\ellipselist_store.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\ellipselist_store.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\ellipselist_store.cs",
-              "ViewState": "AgIAADkAAAAAAAAAAAAYwEsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAYwCcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-17T06:45:25.996Z"
+              "WhenOpened": "2026-11-17T06:45:25.996Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "linelist_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\linelist_store.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAADwvzoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAC4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-16T21:35:13.176Z"
+              "WhenOpened": "2026-11-16T21:35:13.176Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "drawingdata_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\drawingdata_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\drawing_objects\\drawingdata_store.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\drawing_objects\\drawingdata_store.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\model_store\\drawing_objects\\drawingdata_store.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAmwDkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAEIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-16T21:14:44.49Z"
+              "WhenOpened": "2026-11-16T21:14:44.49Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "modeldata_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\modeldata_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\modeldata_store.cs",
@@ -287,7 +326,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "file_events.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\events_handler\\file_events.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\events_handler\\file_events.cs",
@@ -299,19 +338,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "gvariables_static.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\global_variables\\gvariables_static.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\global_variables\\gvariables_static.cs",
               "ToolTip": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\global_variables\\gvariables_static.cs",
               "RelativeToolTip": "dxf_to_surface\\src\\global_variables\\gvariables_static.cs",
-              "ViewState": "AgIAAFsCAAAAAAAAAAAiwHgCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJwCAAAAAAAAAAAmwLUCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-17T21:20:37.526Z"
+              "WhenOpened": "2026-11-17T21:20:37.526Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "main_frm.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\main_frm.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\main_frm.cs",
@@ -323,7 +363,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "label_list_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\geom_objects\\label_list_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\geom_objects\\label_list_store.cs",
@@ -335,7 +375,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "axisdata_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\geom_objects\\axisdata_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\geom_objects\\axisdata_store.cs",
@@ -347,7 +387,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "drawing_events.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\events_handler\\drawing_events.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\events_handler\\drawing_events.cs",
@@ -359,7 +399,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "selectrectangle_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\geom_objects\\selectrectangle_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\geom_objects\\selectrectangle_store.cs",
@@ -371,7 +411,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "selectcircle_store.cs",
               "DocumentMoniker": "C:\\Users\\samin\\OneDrive\\Documents\\Programming\\Other programs\\002_Main_program\\Draw2D_geometry\\dxf_to_surface\\dxf_to_surface\\src\\model_store\\geom_objects\\selectcircle_store.cs",
               "RelativeDocumentMoniker": "dxf_to_surface\\src\\model_store\\geom_objects\\selectcircle_store.cs",
