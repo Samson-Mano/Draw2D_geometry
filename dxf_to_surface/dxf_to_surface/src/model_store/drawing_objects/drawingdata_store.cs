@@ -57,11 +57,15 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
 
-        public void perform_intersection_and_splitting()
+        public void create_regions()
         {
 
-            // Perform intersection and splitting for lines, circles, and ellipses
-            IntersectionSplitting.Intersection_and_Splitting(ref line_data, ref circle_data, ref ellipse_data);
+            // // Perform intersection and splitting for lines, circles, and ellipses
+            // IntersectionSplitting.Intersection_and_Splitting(ref line_data, ref circle_data, ref ellipse_data);
+
+            planargraph_store planargraph = new planargraph_store(line_data, circle_data, ellipse_data, spline_data);
+
+
 
 
         }

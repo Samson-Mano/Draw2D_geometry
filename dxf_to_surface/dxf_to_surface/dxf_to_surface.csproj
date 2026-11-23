@@ -72,6 +72,7 @@
     <Compile Include="src\model_store\drawing_objects\halfedge_store.cs" />
     <Compile Include="src\model_store\drawing_objects\IntersectionSplitting.cs" />
     <Compile Include="src\model_store\drawing_objects\linelist_store.cs" />
+    <Compile Include="src\model_store\drawing_objects\planargraph_store.cs" />
     <Compile Include="src\model_store\drawing_objects\region_store.cs" />
     <Compile Include="src\model_store\drawing_objects\splinelist_store.cs" />
     <Compile Include="src\model_store\geom_objects\axisdata_store.cs" />

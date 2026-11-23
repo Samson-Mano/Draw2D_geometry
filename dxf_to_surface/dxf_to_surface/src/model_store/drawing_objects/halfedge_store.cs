@@ -23,6 +23,14 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public ellipse_store Ellipse;
         public spline_store Spline;
 
+
+
+        // For circle and ellipse type = 0, no start/end point, just the full primitive.
+        // For type = 1, start/end points are defined by the primitive's parameterization.
+        public int startPtId = -1; // index into the planar graph's node points
+
+        public int endPtId = -1;   // index into the planar graph's node points
+
         // --- Parameter range on the primitive, in the primitive's native parameter ---
         // Line:    t in [0, 1] along Line.Start->Line.End
         // Circle:  angle in [0, 2π), CCW, measured from +X in world frame
@@ -47,9 +55,9 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public halfedge_store Prev;           // previous half-edge (optional; derivable from Next)
 
         
-        // --- arc-length table for non-uniform primitives ---
-        public double[] ArcLengthTableParam;   // null for line/circle (uniform)
-        public double[] ArcLengthTableS;
+        //// --- arc-length table for non-uniform primitives ---
+        //public double[] ArcLengthTableParam;   // null for line/circle (uniform)
+        //public double[] ArcLengthTableS;
 
 
         // --- Back-pointer to the region (one of the two adjacent regions) ---
