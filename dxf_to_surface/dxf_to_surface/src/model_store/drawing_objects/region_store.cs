@@ -28,6 +28,16 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
        
 
+        public void AddOuterRing(List<halfedge_store> halfEdges)
+        {
+            OuterRing = halfEdges;
+
+            //foreach (var he in halfEdges)
+            //{
+            //    he.Next = halfEdges[(halfEdges.IndexOf(he) + 1) % halfEdges.Count];
+            //    he.Prev = halfEdges[(halfEdges.IndexOf(he) - 1 + halfEdges.Count) % halfEdges.Count];
+            //}
+        }
 
 
     }

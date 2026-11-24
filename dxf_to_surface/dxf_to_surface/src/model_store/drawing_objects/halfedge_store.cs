@@ -50,11 +50,19 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public Vector2 StartPoint;      // world point at the ring's "start" of this half-edge
         public Vector2 EndPoint;        // world point at the ring's "end"
 
-        // --- Ring linkage (filled when the ring is assembled) ---
-        public halfedge_store Next;           // next half-edge CCW around the same region
-        public halfedge_store Prev;           // previous half-edge (optional; derivable from Next)
+        //// --- Ring linkage (filled when the ring is assembled) ---
+        //public halfedge_store Next;           // next half-edge CCW around the same region
+        //public halfedge_store Prev;           // previous half-edge (optional; derivable from Next)
 
-        
+
+        public int start_w_edge_id = -1; // index into the planar graph's half-edges
+        public int start_ccw_edge_id = -1; // index into the planar graph's half-edges
+
+        public int end_w_edge_id = -1; // index into the planar graph's half-edges
+        public int end_ccw_edge_id = -1; // index into the planar graph's half-edges
+
+
+
         //// --- arc-length table for non-uniform primitives ---
         //public double[] ArcLengthTableParam;   // null for line/circle (uniform)
         //public double[] ArcLengthTableS;
@@ -64,7 +72,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         // Convention: this half-edge is on the boundary of the region to its LEFT
         // when traversed StartPoint -> EndPoint.
         public region_store LeftRegion;       // may be null for the outer infinite face
-        public halfedge_store Twin;           // the opposite-direction half-edge on the shared edge, if any
+        // public halfedge_store Twin;           // the opposite-direction half-edge on the shared edge, if any
 
 
         // --- Evaluation ---
@@ -204,6 +212,117 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
 
+        public void setNextPrevLinks(Dictionary<int, halfedge_store> otherhalfEdges)
+        {
+            // Set the Next and Prev links for this half-edge, using the provided dictionary of half-edges.
+            SortedList<double, int> start_connected_edge_id = new SortedList<double, int>();
+            SortedList<double, int> end_connected_edge_id = new SortedList<double, int>();
+
+            double current_angle = 0.0;
+
+            // Step 1: Find all half-edges connected to the start point of this half-edge
+
+            foreach (halfedge_store he in otherhalfEdges.Values)
+            {
+                if (he.startPtId == this.startPtId)
+                {
+                    // This half-edge start point is connected to the start point of another half-edge
+
+                    // Find the angle of the other half-edge's direction vector relative to the current half-edge's direction vector
+                    Vector2 ptA = this.PointAt(0.1); // A point slightly along this half-edge
+                    Vector2 ptB = this.StartPoint; // The start point of this half-edge
+                    Vector2 ptC = he.PointAt(0.1); // A point slightly along the other half-edge
+
+                    // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
+                    current_angle = get_angle_between(ptB, ptA, ptC);
+
+                    start_connected_edge_id[current_angle] = he.HalfEdgeId;
+
+                }
+                else if (he.endPtId == this.startPtId)
+                {
+                    // This half-edge start point is connected to the end point of another half-edge
+
+                    Vector2 ptA = this.PointAt(0.1); // A point slightly along this half-edge
+                    Vector2 ptB = this.StartPoint; // The start point of this half-edge
+                    Vector2 ptC = he.PointAt(0.9); // A point slightly along the other half-edge
+
+                    // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
+                    current_angle = get_angle_between(ptB, ptA, ptC);
+
+                    start_connected_edge_id[current_angle] = he.HalfEdgeId;
+
+                }
+            }
+
+
+            // Step 2: Find all half-edges connected to the end point of this half-edge
+            foreach (halfedge_store he in otherhalfEdges.Values)
+            {
+                if (he.startPtId == this.endPtId)
+                {
+                    // This half-edge end point is connected to the start point of another half-edge
+
+                    // Find the angle of the other half-edge's direction vector relative to the current half-edge's direction vector
+                    Vector2 ptA = this.PointAt(0.9); // A point slightly along this half-edge
+                    Vector2 ptB = this.EndPoint; // The end point of this half-edge
+                    Vector2 ptC = he.PointAt(0.1); // A point slightly along the other half-edge
+
+                    // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
+                    current_angle = get_angle_between(ptB, ptA, ptC);
+
+                    end_connected_edge_id[current_angle] = he.HalfEdgeId;
+
+                }
+                else if (he.endPtId == this.endPtId)
+                {
+                    // This half-edge end point is connected to the end point of another half-edge
+
+                    Vector2 ptA = this.PointAt(0.9); // A point slightly along this half-edge
+                    Vector2 ptB = this.EndPoint; // The end point of this half-edge
+                    Vector2 ptC = he.PointAt(0.9); // A point slightly along the other half-edge
+
+                    // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
+                    current_angle = get_angle_between(ptB, ptA, ptC);
+
+                    end_connected_edge_id[current_angle] = he.HalfEdgeId;
+
+                }
+            }
+
+
+            // Step 3: Set the next and previous half-edges based on the sorted angles
+            this.start_w_edge_id = start_connected_edge_id.Values.First();
+            this.start_ccw_edge_id = start_connected_edge_id.Values.Last();
+
+            this.end_w_edge_id = end_connected_edge_id.Values.First();
+            this.end_ccw_edge_id = end_connected_edge_id.Values.Last();
+
+        }
+
+
+
+
+        private double get_angle_between(Vector2 origin_pt, Vector2 start_pt, Vector2 end_pt)
+        {
+            // Returns the CCW angle (degrees, in [0, 360)) from vector (origin -> start)
+            // to vector (origin -> end). Robust near 0° and 180°.
+
+            // Calculate the angle between two lines: (origin_pt -> start_pt) and (origin_pt -> end_pt)
+            // Vector2 line1 = start_pt - orgin_pt;
+            double dx1 = start_pt.X - origin_pt.X;
+            double dy1 = start_pt.Y - origin_pt.Y;
+            double dx2 = end_pt.X - origin_pt.X;
+            double dy2 = end_pt.Y - origin_pt.Y;
+
+            double cross = dx1 * dy2 - dy1 * dx2;
+            double dot = dx1 * dx2 + dy1 * dy2;
+
+            double angle_rad = Math.Atan2(cross, dot);   // [-π, π]
+            if (angle_rad < 0) angle_rad += 2 * Math.PI; // [0, 2π)
+
+            return angle_rad * (180.0 / Math.PI);
+        }
 
 
 
