@@ -50,29 +50,22 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         public Vector2 StartPoint;      // world point at the ring's "start" of this half-edge
         public Vector2 EndPoint;        // world point at the ring's "end"
 
-        //// --- Ring linkage (filled when the ring is assembled) ---
+        // --- Ring linkage (filled when the ring is assembled) ---
         //public halfedge_store Next;           // next half-edge CCW around the same region
         //public halfedge_store Prev;           // previous half-edge (optional; derivable from Next)
+        // public halfedge_store Twin;           // the opposite-direction half-edge on the shared edge, if any
 
+        public int NextHalfEdgeId;           // next half-edge CCW around the same region
+        public int PrevHalfEdgeId;           // previous half-edge (optional; derivable from Next)
 
-        public int start_w_edge_id = -1; // index into the planar graph's half-edges
-        public int start_ccw_edge_id = -1; // index into the planar graph's half-edges
-
-        public int end_w_edge_id = -1; // index into the planar graph's half-edges
-        public int end_ccw_edge_id = -1; // index into the planar graph's half-edges
-
-
-
-        //// --- arc-length table for non-uniform primitives ---
-        //public double[] ArcLengthTableParam;   // null for line/circle (uniform)
-        //public double[] ArcLengthTableS;
+        public int TwinHalfEdgeId;           // the opposite-direction half-edge on the shared edge
 
 
         // --- Back-pointer to the region (one of the two adjacent regions) ---
         // Convention: this half-edge is on the boundary of the region to its LEFT
         // when traversed StartPoint -> EndPoint.
         public region_store LeftRegion;       // may be null for the outer infinite face
-        // public halfedge_store Twin;           // the opposite-direction half-edge on the shared edge, if any
+
 
 
         // --- Evaluation ---
@@ -212,7 +205,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
 
-        public void setNextPrevLinks(Dictionary<int, halfedge_store> otherhalfEdges)
+        public void setNextPrevLinks(Dictionary<int, halfedge_store> halfEdges)
         {
             // Set the Next and Prev links for this half-edge, using the provided dictionary of half-edges.
             SortedList<double, int> start_connected_edge_id = new SortedList<double, int>();
@@ -220,32 +213,23 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
             double current_angle = 0.0;
 
-            // Step 1: Find all half-edges connected to the start point of this half-edge
+            // Step 1: Find all half-edges connected to the start & end point of this half-edge
 
-            foreach (halfedge_store he in otherhalfEdges.Values)
+            foreach (halfedge_store he in halfEdges.Values)
             {
-                if (he.startPtId == this.startPtId)
+                if (he.HalfEdgeId == this.HalfEdgeId || he.HalfEdgeId == this.TwinHalfEdgeId)
                 {
-                    // This half-edge start point is connected to the start point of another half-edge
-
-                    // Find the angle of the other half-edge's direction vector relative to the current half-edge's direction vector
-                    Vector2 ptA = this.PointAt(0.1); // A point slightly along this half-edge
-                    Vector2 ptB = this.StartPoint; // The start point of this half-edge
-                    Vector2 ptC = he.PointAt(0.1); // A point slightly along the other half-edge
-
-                    // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
-                    current_angle = get_angle_between(ptB, ptA, ptC);
-
-                    start_connected_edge_id[current_angle] = he.HalfEdgeId;
-
+                    // Skip self and Twin
+                    continue;
                 }
-                else if (he.endPtId == this.startPtId)
+
+                if (he.endPtId == this.startPtId)
                 {
                     // This half-edge start point is connected to the end point of another half-edge
 
-                    Vector2 ptA = this.PointAt(0.1); // A point slightly along this half-edge
+                    Vector2 ptA = this.StartPoint + this.TangentAt(0.001); // A point slightly along this half-edge
                     Vector2 ptB = this.StartPoint; // The start point of this half-edge
-                    Vector2 ptC = he.PointAt(0.9); // A point slightly along the other half-edge
+                    Vector2 ptC = this.StartPoint - he.TangentAt(0.999); // A point slightly along the other half-edge
 
                     // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
                     current_angle = get_angle_between(ptB, ptA, ptC);
@@ -253,34 +237,16 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     start_connected_edge_id[current_angle] = he.HalfEdgeId;
 
                 }
-            }
-
-
-            // Step 2: Find all half-edges connected to the end point of this half-edge
-            foreach (halfedge_store he in otherhalfEdges.Values)
-            {
+      
+                // Find all half-edges connected to the end point of this half-edge
                 if (he.startPtId == this.endPtId)
                 {
                     // This half-edge end point is connected to the start point of another half-edge
 
                     // Find the angle of the other half-edge's direction vector relative to the current half-edge's direction vector
-                    Vector2 ptA = this.PointAt(0.9); // A point slightly along this half-edge
+                    Vector2 ptA = this.EndPoint - this.TangentAt(0.999); // A point slightly along this half-edge
                     Vector2 ptB = this.EndPoint; // The end point of this half-edge
-                    Vector2 ptC = he.PointAt(0.1); // A point slightly along the other half-edge
-
-                    // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
-                    current_angle = get_angle_between(ptB, ptA, ptC);
-
-                    end_connected_edge_id[current_angle] = he.HalfEdgeId;
-
-                }
-                else if (he.endPtId == this.endPtId)
-                {
-                    // This half-edge end point is connected to the end point of another half-edge
-
-                    Vector2 ptA = this.PointAt(0.9); // A point slightly along this half-edge
-                    Vector2 ptB = this.EndPoint; // The end point of this half-edge
-                    Vector2 ptC = he.PointAt(0.9); // A point slightly along the other half-edge
+                    Vector2 ptC = this.EndPoint + he.TangentAt(0.001); // A point slightly along the other half-edge
 
                     // Find the angle between the two vectors (ptB->ptA) and (ptB->ptC)
                     current_angle = get_angle_between(ptB, ptA, ptC);
@@ -292,13 +258,27 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
             // Step 3: Set the next and previous half-edges based on the sorted angles
-            this.start_w_edge_id = start_connected_edge_id.Values.First();
-            this.start_ccw_edge_id = start_connected_edge_id.Values.Last();
+            int start_w_edge_id = start_connected_edge_id.Values.First();
+            int start_ccw_edge_id = start_connected_edge_id.Values.Last();
 
-            this.end_w_edge_id = end_connected_edge_id.Values.First();
-            this.end_ccw_edge_id = end_connected_edge_id.Values.Last();
+            int end_w_edge_id = end_connected_edge_id.Values.First();
+            int end_ccw_edge_id = end_connected_edge_id.Values.Last();
+
+            // Set the next and previous half-edges Id for this half-edge
+
+            //   prev \            / next
+            //         \          /  
+            //          S-------->E
+            //         /   edge   \
+            //        /            \ 
+
+
+
+            this.PrevHalfEdgeId = start_ccw_edge_id;
+            this.NextHalfEdgeId = end_w_edge_id;
 
         }
+
 
 
 
