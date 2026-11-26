@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace dxf_to_surface.src.model_store.drawing_objects
 {
@@ -13,8 +14,13 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
 
         public static void Intersection_and_Splitting(ref linelist_store line_data,
-            ref circlelist_store circle_data, ref ellipselist_store ellipse_data)
+            ref circlelist_store circle_data, ref ellipselist_store ellipse_data,
+            ref splinelist_store spline_data)
         {
+            // Check if the splines self intersect and remove them from the spline data if they do
+            // Self-intersecting splines are not supported
+            Remove_selfintersecting_splines(ref spline_data);
+
             // Perform intersection and splitting for lines, circles, and ellipses
             // Hierarchy 1: Line-Line, Line-Circle, Line-Ellipse
             Line_Line_Intersection_and_Splitting(ref line_data);
@@ -29,6 +35,29 @@ namespace dxf_to_surface.src.model_store.drawing_objects
             Ellipse_Ellipse_Intersection_and_Splitting(ref ellipse_data);
 
         }
+
+
+        public static void Remove_selfintersecting_splines(ref splinelist_store spline_data)
+        {
+            // Check if the splines self intersect
+            List<int> selfIntersectingSplineIds = new List<int>();
+
+            foreach (spline_store spline in spline_data.splineMap.Values)
+            {
+                if (DoesSplineSelfIntersect(spline.degree, spline.isPeriodic, 
+                    spline.isRational, spline.weights, spline.knots, spline.controlPoints))
+                {
+                    selfIntersectingSplineIds.Add(spline.spline_id);
+                }
+            }
+
+            // Remove self-intersecting splines from the spline data
+            foreach (int splineId in selfIntersectingSplineIds)
+            {
+                spline_data.remove_spline(splineId);
+            }
+        }
+
 
 
 
@@ -59,7 +88,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     // Gaurd to prevent line self intersection
                     if (line1.line_id != line2.line_id)
                     {
-                        if (DoLinesIntersect(line1.lineStartPt, line1.lineEndPt, line2.lineStartPt, line2.lineEndPt))
+                        if (DoLineSegmentsIntersect(line1.lineStartPt, line1.lineEndPt, line2.lineStartPt, line2.lineEndPt))
                         {
                             // Store the intersection information
                             line_intersections[line1.line_id].Add(line2.line_id);
@@ -1135,7 +1164,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         /// at a point strictly inside both segments' spans (within eps slack).
         /// Collinear overlaps return false — use TryGetCollinearOverlap for those.
         /// </summary>
-        public static bool DoLinesIntersect(
+        public static bool DoLineSegmentsIntersect(
             Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double eps = 1e-9)
         {
             double d1x = p2.X - p1.X, d1y = p2.Y - p1.Y;
@@ -2184,6 +2213,168 @@ namespace dxf_to_surface.src.model_store.drawing_objects
         }
 
 
+
+
+        #endregion
+
+
+        #region "Spline - Spline Helper Functions"
+
+        // Proper crossing: interiors of both segments intersect at a point.
+        // Returns false if they share an endpoint or are collinear-overlapping.
+        private static bool ProperSegmentsIntersect(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2, double tol = 1e-9)
+        {
+            // Standard orientation test.
+            double d1 = Cross(q2 - q1, p1 - q1);
+            double d2 = Cross(q2 - q1, p2 - q1);
+            double d3 = Cross(p2 - p1, q1 - p1);
+            double d4 = Cross(p2 - p1, q2 - p1);
+
+            // Endpoint contact: reject.
+            if (Math.Abs(d1) < tol || Math.Abs(d2) < tol || Math.Abs(d3) < tol || Math.Abs(d4) < tol)
+                return false;
+
+            // Proper crossing: d1, d2 have opposite signs; d3, d4 have opposite signs.
+            return (d1 * d2 < 0) && (d3 * d4 < 0);
+        }
+
+        private static double Cross(Vector2 a, Vector2 b) => a.X * b.Y - a.Y * b.X;
+
+
+        private static Vector2 eval_spline(int degree, bool isPeriodic, bool isRational,
+            List<double> weights, List<double> knots,
+            List<Vector2> controlPoints, double u)
+        {
+            int p = degree;
+            int n = controlPoints.Count - 1;   // highest control point index
+            // var knots = s.knots;
+
+            // Clamp u into the valid domain. For a clamped spline the valid domain is
+            // [knots[p], knots[n+1]]. For periodic splines we wrap into the same range.
+            double uMin = knots[p];
+            double uMax = knots[n + 1];
+
+            if (isPeriodic)
+            {
+                double span = uMax - uMin;
+                if (span <= 0) return controlPoints[0];
+                u = uMin + ((u - uMin) % span + span) % span;
+            }
+            else
+            {
+                if (u < uMin) u = uMin;
+                if (u > uMax) u = uMax;
+            }
+
+            // Find knot span k such that knots[k] <= u < knots[k+1]
+            // (with the standard special case at the right end: k = n).
+            int k = p;
+            if (u >= uMax) k = n;
+            else
+            {
+                // binary search for speed; linear is fine for small control counts
+                int lo = p, hi = n + 1;
+                while (hi - lo > 1)
+                {
+                    int mid = (lo + hi) >> 1;
+                    if (u < knots[mid]) hi = mid; else lo = mid;
+                }
+                k = lo;
+            }
+
+            // Copy the p+1 control points (homogeneous) into d[]
+            int m = p + 1;
+            var dx = new double[m];
+            var dy = new double[m];
+            var dw = new double[m];
+
+            for (int j = 0; j < m; j++)
+            {
+                int idx = k - p + j;
+                double w = isRational ? weights[idx] : 1.0;
+                dx[j] = controlPoints[idx].X * w;
+                dy[j] = controlPoints[idx].Y * w;
+                dw[j] = w;
+            }
+
+            // De Boor recursion
+            for (int r = 1; r <= p; r++)
+            {
+                for (int j = p; j >= r; j--)
+                {
+                    int i = j + k - p;
+                    double denom = knots[i + p - r + 1] - knots[i];
+                    double alpha = denom == 0.0 ? 0.0 : (u - knots[i]) / denom;
+
+                    dx[j] = (1.0 - alpha) * dx[j - 1] + alpha * dx[j];
+                    dy[j] = (1.0 - alpha) * dy[j - 1] + alpha * dy[j];
+                    dw[j] = (1.0 - alpha) * dw[j - 1] + alpha * dw[j];
+                }
+            }
+
+            double wf = dw[p];
+            if (isRational && Math.Abs(wf) > 1e-12)
+                return new Vector2((float)(dx[p] / wf), (float)(dy[p] / wf));
+            else
+                return new Vector2((float)dx[p], (float)dy[p]);
+        }
+
+
+        private static bool DoesSplineSelfIntersect(int degree, bool isPeriodic, bool isRational,
+            List<double> weights, List<double> knots,
+            List<Vector2> controlPoints)
+        {
+            // ---- Fast reject: self-intersecting control polygon implies self-intersecting spline ----
+            int cpCount = controlPoints.Count;
+            for (int i = 0; i < cpCount - 1; i++)
+            {
+                for (int j = i + 2; j < cpCount - 1; j++)
+                {
+                    if (isPeriodic && i == 0 && j == cpCount - 2) continue;   // wrap-around
+
+                    if (ProperSegmentsIntersect( controlPoints[i], controlPoints[i + 1],
+                        controlPoints[j], controlPoints[j + 1]))
+                        return true;
+                }
+            }
+
+            // ---- Main check: sample the spline densely ----
+            int n = Math.Max(256, 16 * cpCount);
+            var splinePoints = new List<Vector2>(n);
+
+            int p = degree;
+            int nCp = controlPoints.Count - 1;
+            double uMin = knots[p];
+            double uMax = knots[nCp + 1];
+            double span = uMax - uMin;
+
+            for (int i = 0; i < n; i++)
+            {
+                double u = uMin + span * ((double)i / (n - 1.0));
+                splinePoints.Add(eval_spline(degree, isPeriodic, isRational, weights, knots, controlPoints, u));
+            }
+
+            int maxSegments = n - 1;
+            for (int i = 0; i < maxSegments; i++)
+            {
+                Vector2 p1 = splinePoints[i];
+                Vector2 p2 = splinePoints[i + 1];
+                for (int j = i + 2; j < maxSegments; j++)
+                {
+                    if (isPeriodic && i == 0 && j == maxSegments - 1) continue;   // wrap-around
+
+                    Vector2 q1 = splinePoints[j];
+                    Vector2 q2 = splinePoints[j + 1];
+
+                    if (ProperSegmentsIntersect(p1, p2, q1, q2))
+                    {
+                        return true;
+                    }
+                        //__________________
+                }
+            }
+            return false;
+        }
 
 
         #endregion

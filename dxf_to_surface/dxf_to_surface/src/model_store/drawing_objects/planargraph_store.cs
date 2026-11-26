@@ -580,9 +580,9 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                     Region = region,
                     SignedArea = area
                 };
-                // Compute an interior point for the face (for nesting tests)
-                Vector2 interiorPt = ComputeInteriorPoint(region);
-                face.InteriorPts.Add(interiorPt);
+                // Compute interior points for the face (for nesting tests)
+                List<Vector2> interiorPts = GetInteriorPoints(region);
+                face.InteriorPts.AddRange(interiorPts);
                 faceList.Add(face);
             }
 
@@ -595,7 +595,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                 faceList[i].Region.Parent = null;
                 for (int j = 0; j < i; j++)
                 {
-                    if (PointInRing(faceList[i].InteriorPts[0], faceList[j].Region.OuterRing))
+                    if (IsAllPointsInRing(faceList[i].InteriorPts, faceList[j].Region.OuterRing))
                     {
                         faceList[i].Region.Parent = faceList[j].Region;
                         break;
@@ -624,6 +624,100 @@ namespace dxf_to_surface.src.model_store.drawing_objects
             }
 
         }
+
+        public int Depth(region_store r)
+        {
+            int depth = 0;
+            while (r.Parent != null)
+            {
+                depth++;
+                r = r.Parent;
+            }
+            return depth;
+        }
+
+
+
+        private List<Vector2> GetInteriorPoints(region_store region)
+        {
+            // return points on the boundary of the region, for nesting tests.
+            // For closed primitives, sample 4 points around the curve.
+            List<Vector2> interiorPoints = new List<Vector2>();
+
+            foreach (var he in region.OuterRing)
+            {
+
+                if(isIsolatedClosedPrimitive(he))
+                {
+                    // Closed primitives (full circles, full ellipses, closed splines) 
+                    interiorPoints.Add(he.PointAt(0.0));
+                    interiorPoints.Add(he.PointAt(0.25));
+                    interiorPoints.Add(he.PointAt(0.5));
+                    interiorPoints.Add(he.PointAt(0.75));
+
+                    continue;
+                }
+
+                interiorPoints.Add(he.PointAt(0.25));
+                interiorPoints.Add(he.PointAt(0.5));
+                interiorPoints.Add(he.PointAt(0.75));
+
+            }
+
+            return interiorPoints;
+        }
+
+        /// <summary>
+        /// Returns true if `pt` is strictly inside the simple closed ring (outer ring only;
+        /// ignores holes). Uses ray casting with a horizontal ray towards +X, sampled per
+        /// half-edge with adaptive density.
+        /// </summary>
+        private bool PointInRing(Vector2 pt, List<halfedge_store> ring)
+        {
+            int crossings = 0;
+
+            foreach (var he in ring)
+            {
+                if (he.Kind == PrimitiveKind.Line)
+                {
+                    Vector2 a = he.StartPoint, b = he.EndPoint;
+                    if ((a.Y > pt.Y) != (b.Y > pt.Y))
+                    {
+                        double x = a.X + (pt.Y - a.Y) * (b.X - a.X) / (b.Y - a.Y);
+                        if (x > pt.X) crossings++;
+                    }
+                }
+                else
+                {
+                    int n = 256;   // 64 for arcs, 128 for ellipses, 256 for splines
+                    Vector2 prev = he.PointAt(0.0);
+                    for (int i = 1; i <= n; i++)
+                    {
+                        Vector2 cur = he.PointAt((double)i / n);
+                        if ((prev.Y > pt.Y) != (cur.Y > pt.Y))
+                        {
+                            double x = prev.X + (pt.Y - prev.Y) * (cur.X - prev.X) / (cur.Y - prev.Y);
+                            if (x > pt.X) crossings++;
+                        }
+                        prev = cur;
+                    }
+                }
+            }
+
+            return (crossings & 1) == 1;
+        }
+
+        /// <summary>
+        /// Returns true if ALL points are inside the ring. (Debug helper; not used for nesting.)
+        /// </summary>
+        private bool IsAllPointsInRing(List<Vector2> points, List<halfedge_store> ring)
+        {
+            foreach (var pt in points)
+                if (!PointInRing(pt, ring))
+                    return false;
+            return true;
+        }
+
 
 
 
