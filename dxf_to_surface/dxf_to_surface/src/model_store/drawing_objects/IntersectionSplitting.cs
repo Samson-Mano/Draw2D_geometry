@@ -26,6 +26,7 @@ namespace dxf_to_surface.src.model_store.drawing_objects
             Line_Line_Intersection_and_Splitting(ref line_data);
             Line_Circle_Intersection_and_Splitting(ref line_data, ref circle_data);
             Line_Ellipse_Intersection_and_Splitting(ref line_data, ref ellipse_data);
+            Line_Spline_Intersection_and_Splitting(ref line_data, ref spline_data);
 
             // Hierarchy 2: Circle-Circle, Circle-Ellipse
             Circle_Circle_Intersection_and_Splitting(ref circle_data);
@@ -813,6 +814,147 @@ namespace dxf_to_surface.src.model_store.drawing_objects
 
         }
 
+
+
+        public static void Line_Spline_Intersection_and_Splitting(ref linelist_store line_data, ref splinelist_store spline_data)
+        {
+            // Perform line-spline intersection and splitting
+            // Line - Spline Intersection and Splitting
+            // Dictionary to store line id, spline id and their corresponding intersecting param t values
+            Dictionary<int, List<(double tLine, double tSpline, Vector2 point)>> linespline_intersections = 
+                new Dictionary<int, List<(double tLine, double tSpline, Vector2 point)>>();
+
+            Dictionary<int, List<(double tLine, double tSpline, Vector2 point)>> splineline_intersections = 
+                new Dictionary<int, List<(double tLine, double tSpline, Vector2 point)>>();
+
+
+            // Create a list of lines to process
+            foreach (line_store line in line_data.lineMap.Values)
+            {
+                linespline_intersections[line.line_id] = new List<(double tLine, double tSpline, Vector2 point)>();
+            }
+            // Create a list of splines to process
+            foreach (spline_store spline in spline_data.splineMap.Values)
+            {
+                splineline_intersections[spline.spline_id] = new List<(double tLine, double tSpline, Vector2 point)>();
+            }
+
+
+
+            // Get all the intersection parameter t for line and splines
+            for(int i = 0; i < line_data.lineMap.Count; i++)
+            {
+                line_store line = line_data.lineMap.ElementAt(i).Value;
+
+                for (int j = 0; j < spline_data.splineMap.Count; j++)
+                {
+                    spline_store spline = spline_data.splineMap.ElementAt(j).Value;
+
+                    List<double> line_intersection_param_t = new List<double>();
+                    List<double> spline_intersection_param_t = new List<double>();
+                    List<Vector2> intersection_points = new List<Vector2>();
+
+                    // int degree, bool isPeriodic, bool isRational,
+                    // List<double> weights, List< double > knots,
+                    // List<Vector2> controlPoints
+
+                    GetLineSplineIntersectionParameters(line.lineStartPt, line.lineEndPt,
+                                spline.degree, spline.isPeriodic,
+                            spline.isRational, spline.weights, spline.knots, spline.controlPoints,
+                                out line_intersection_param_t, out spline_intersection_param_t, out intersection_points);
+
+                    for (int k = 0; k < line_intersection_param_t.Count; k++)
+                    {
+                        var hit = (line_intersection_param_t[k], spline_intersection_param_t[k], intersection_points[k]);
+                        linespline_intersections[line.line_id].Add(hit);
+                        splineline_intersections[spline.spline_id].Add(hit);
+                    }
+
+                }
+            }
+
+
+            // Create a new list to hold the split lines
+            List<line_store> new_lines = new List<line_store>();
+
+            foreach (var kvp in linespline_intersections)
+            {
+                int lineId = kvp.Key;
+                List<double> intersectionparam_t = kvp.Value;
+
+                // Get the original line
+                line_store originalLine = line_data.lineMap[lineId];
+
+                List<Vector2> intersectionPoints = linespline_intersection_points[lineId];
+
+                Vector2 startPt = originalLine.lineStartPt;
+
+                foreach (Vector2 pt in intersectionPoints)
+                {
+                    // Create a new line segment from startPt to pt
+                    line_store newLine = new line_store
+                    {
+                        line_id = 0,
+                        lineStartPt = startPt,
+                        lineEndPt = pt
+                    };
+                    new_lines.Add(newLine);
+
+                    // Update startPt for the next segment
+                    startPt = pt;
+                }
+
+                // Add the last line segment from the last intersection point to the original line's end point
+                line_store lastLine = new line_store
+                {
+                    line_id = 0,
+                    lineStartPt = startPt,
+                    lineEndPt = originalLine.lineEndPt
+                };
+                new_lines.Add(lastLine);
+            }
+
+            // Create a new list to hold the split splines
+            List<spline_store> new_splines = new List<spline_store>();
+
+            foreach(var kvp in splineline_intersections)
+            {
+                int splineId = kvp.Key;
+                List<double> intersectionparam_t = kvp.Value;
+
+                // Get the original spline
+                spline_store originalSpline = spline_data.splineMap[splineId];
+
+                //double uMin = originalSpline.knots[originalSpline.degree];
+                //double uMax = originalSpline.knots[originalSpline.controlPoints.Count];
+
+                List<Vector2> intersectionPoints = splineline_intersection_points[splineId];
+
+                Vector2 startPt = originalSpline.GetSplinePoint(0);
+
+                int k = 0;
+                foreach (double param_t in intersectionparam_t)
+                {
+                    Vector2 pt = intersectionPoints[k];
+
+                    // Using the param_t, split the spline into two segments
+
+
+
+                    // Update startPt for the next segment
+                    startPt = pt;
+                    k++;
+
+                }
+
+
+            }
+
+
+
+
+
+        }
 
 
 
@@ -2374,6 +2516,168 @@ namespace dxf_to_surface.src.model_store.drawing_objects
                 }
             }
             return false;
+        }
+
+
+
+        private static void DedupeIntersectionParams(List<double> tLine, List<double> tSpline,
+            List<Vector2> points, double tol = 1e-9)
+        {
+            // Dedupe by spline parameter (same u means same physical point).
+            // More robust than deduping by tLine, because two near-equal tLine values
+            // can come from distinct nearby intersections on a wiggly spline.
+            var items = new List<(double tL, double tS, Vector2 p)>();
+
+            for (int i = 0; i < tLine.Count; i++)
+            {
+                items.Add((tLine[i], tSpline[i], points[i]));
+            }
+
+
+            items.Sort((a, b) =>
+            {
+                int c = a.tL.CompareTo(b.tL);
+                return c != 0 ? c : a.tS.CompareTo(b.tS);
+            });
+
+            var deduped = new List<(double tL, double tS, Vector2 p)>();
+            foreach (var it in items)
+            {
+                if (deduped.Count > 0 && Math.Abs(it.tS - deduped[deduped.Count - 1].tS) <= tol)
+                    continue;  // near-duplicate in spline parameter; keep first
+                deduped.Add(it);
+            }
+
+
+            tLine.Clear(); tSpline.Clear(); points.Clear();
+            foreach (var it in deduped) 
+            { 
+                tLine.Add(it.tL); tSpline.Add(it.tS); points.Add(it.p); 
+            }
+
+        }
+
+
+        private static void SortByLineParam(List<double> tLine, List<double> tSpline,
+             List<Vector2> points)
+        {
+            var items = new List<(double tL, double tS, Vector2 p)>();
+            for (int i = 0; i < tLine.Count; i++)
+            {
+                items.Add((tLine[i], tSpline[i], points[i]));
+            }
+
+
+            items.Sort((a, b) =>
+            {
+                int c = a.tL.CompareTo(b.tL);
+                return c != 0 ? c : a.tS.CompareTo(b.tS);
+            });
+
+
+            tLine.Clear(); tSpline.Clear(); points.Clear();
+
+            foreach (var it in items) 
+            { 
+                tLine.Add(it.tL); tSpline.Add(it.tS); points.Add(it.p); 
+            }
+
+        }
+
+
+
+        private static void GetLineSplineIntersectionParameters(
+            Vector2 lineStartPt, Vector2 lineEndPt,
+            int degree, bool isPeriodic, bool isRational,
+            List<double> weights, List<double> knots,
+            List<Vector2> controlPoints,
+            out List<double> line_intersection_param_t,
+            out List<double> spline_intersection_param_t,
+             out List<Vector2> intersection_points)
+        {
+            line_intersection_param_t = new List<double>();
+            spline_intersection_param_t = new List<double>();
+            intersection_points = new List<Vector2>();
+
+            int cpCount = controlPoints.Count;
+            int n = Math.Max(256, 16 * cpCount);
+
+            int p = degree;
+            int nCp = controlPoints.Count - 1;
+            double uMin = knots[p];
+            double uMax = knots[nCp + 1];
+            double span = uMax - uMin;
+
+            // ---- 1. Sample the spline into a polyline, keeping parameters ----
+            var splinePoints = new List<Vector2>(n);
+            var splineParams = new List<double>(n);
+            for (int i = 0; i < n; i++)
+            {
+                double u = uMin + span * ((double)i / (n - 1.0));
+                splineParams.Add(u);
+                splinePoints.Add(eval_spline(degree, isPeriodic, isRational, weights, knots, controlPoints, u));
+            }
+
+            // ---- 2. Intersect each polyline segment with the line segment ----
+            Vector2 lineDir = lineEndPt - lineStartPt;
+            double lineLen2 = lineDir.X * lineDir.X + lineDir.Y * lineDir.Y;
+            if (lineLen2 < 1e-24)
+            {
+                // Degenerate line; no intersections.
+                return;
+            }
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                Vector2 P = splinePoints[i];
+                Vector2 Q = splinePoints[i + 1];
+                Vector2 PQ = Q - P;
+
+                // Solve: lineStart + tLine * lineDir = P + alpha * PQ
+                // Two equations, two unknowns (tLine, alpha).
+                double denom = lineDir.X * PQ.Y - lineDir.Y * PQ.X;   // = cross(lineDir, PQ)
+                if (Math.Abs(denom) < 1e-15)
+                    continue;   // parallel or degenerate segment
+
+                Vector2 AP = P - lineStartPt;
+                double tLine = (AP.X * PQ.Y - AP.Y * PQ.X) / denom;
+                double alpha = (AP.X * lineDir.Y - AP.Y * lineDir.X) / denom;
+
+                // Reject if outside either segment.
+                if (tLine < -1e-12 || tLine > 1.0 + 1e-12) continue;
+                if (alpha < -1e-12 || alpha > 1.0 + 1e-12) continue;
+
+                // Clamp small numerical overshoots.
+                if (tLine < 0.0) tLine = 0.0;
+                if (tLine > 1.0) tLine = 1.0;
+                if (alpha < 0.0) alpha = 0.0;
+                if (alpha > 1.0) alpha = 1.0;
+
+                // Shared point: midpoint of line-side and polyline-side evaluations.
+                // This is the point BOTH sides will use as their endpoint after the split.
+                Vector2 P_line = lineStartPt + (float)tLine * lineDir;
+                Vector2 P_spline = P + (float)alpha * PQ;
+                Vector2 P_shared = 0.5f * (P_line + P_spline);
+
+
+                // Map alpha ∈ [0, 1] on segment i to spline parameter.
+                double uHit = splineParams[i] + alpha * (splineParams[i + 1] - splineParams[i]);
+                double tSplineNorm = (uHit - uMin) / span;   // ∈ [0, 1]
+
+                line_intersection_param_t.Add(tLine);
+                spline_intersection_param_t.Add(tSplineNorm);
+                intersection_points.Add(P_shared);
+            }
+
+            // ---- 3. Dedupe near-identical intersections ----
+            // Two consecutive polyline segments meeting at a vertex can both report the
+            // same hit (when the intersection is exactly at a sample point). Also, the
+            // end of segment i and start of segment i+1 can both register alpha ≈ 1 and
+            // alpha ≈ 0 for the same vertex.
+            DedupeIntersectionParams(line_intersection_param_t, spline_intersection_param_t, intersection_points);
+
+            // ---- 4. Sort by line parameter (stable order for downstream) ----
+            SortByLineParam(line_intersection_param_t, spline_intersection_param_t, intersection_points);
         }
 
 
